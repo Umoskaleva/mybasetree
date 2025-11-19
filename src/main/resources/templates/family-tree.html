@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Генеалогическое древо</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .person { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; background: #ffe6e6; padding: 10px; margin: 10px 0; }
+        a { text-decoration: none; color: #0066cc; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Генеалогическое древо</h1>
+
+<!-- Сообщение об ошибке (например, "ничего не найдено") -->
+<div th:if="${errorMessage}" class="error" th:text="${errorMessage}">Ошибка поиска</div>
+
+<!-- Список людей -->
+<div th:if="${persons != null && !persons.isEmpty()}">
+    <div th:each="person : ${persons}" class="person">
+        <h3>
+            <a th:href="@{/person/{id}(id=${person.id})}" th:text="${person.firstName + ' ' + person.lastName}">Имя Фамилия</a>
+        </h3>
+        <p th:if="${person.dateOfBirth}">Родился(ась): <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span></p>
+        <p th:if="${person.getBirthAddress()}">
+            Место рождения: <span th:text="${person.getBirthAddress().getFormatAddress()}">губерния, уезд...</span>
+        </p>
+    </div>
+</div>
+
+<div th:unless="${persons != null && !persons.isEmpty()}">
+    <p>Нет данных для отображения.</p>
+</div>
+
+<hr>
+<a href="/">На главную</a> |
+<a href="/search-form">Поиск</a>
+
+</body>
+</html>

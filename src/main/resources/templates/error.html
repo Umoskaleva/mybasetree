@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; color: #d32f2f; }
+        .error-box { background: #ffebee; padding: 20px; border-radius: 8px; max-width: 600px; }
+    </style>
+</head>
+<body>
+
+<div class="error-box">
+    <h2>Ошибка</h2>
+    <p th:if="${errorMessage}" th:text="${errorMessage}">Что-то пошло не так.</p>
+    <p th:unless="${errorMessage}">Запрашиваемая страница не найдена.</p>
+    <a href="/family-tree">← Вернуться к дереву</a>
+</div>
+
+</body>
+</html>

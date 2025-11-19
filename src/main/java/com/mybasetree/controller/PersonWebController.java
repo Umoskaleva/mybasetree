@@ -11,10 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-// @Controller Принимает HTTP-запросы от клиента (браузера, мобильного приложения) и возвращает ответ.
+//@Controller Принимает HTTP-запросы от клиента (браузера, мобильного приложения) и возвращает имена HTML-шаблонов (Thymeleaf)
+//шаблоны:
+//person-details
+//family-tree
+//error
 @Controller
 public class PersonWebController {
 
@@ -66,6 +71,85 @@ public class PersonWebController {
         return "family-tree";
     }
 
-    //TODO доделать методы для WEB которые есть в Сервисе
+    @GetMapping("/search/before")
+    public String searchBeforeDate(@RequestParam("date") LocalDate date, Model model) {
+        List<Person> results = personService.findByDateOfBirthBefore(date);
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, родившихся до " + date);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/after")
+    public String searchAfterDate(@RequestParam("date") LocalDate date, Model model) {
+        List<Person> results = personService.findByDateOfBirthAfter(date);
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, родившихся после " + date);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/birth-gubernia")
+    public String searchByBirthGubernia(@RequestParam("gubernia") String gubernia, Model model) {
+        List<Person> results = personService.findByPersonsByBirthGubernia(gubernia.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, родившихся в губернии: " + gubernia);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/birth-naseleniyPunct")
+    public String searchByBirthNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
+        List<Person> results = personService.findByPersonsByBirthNaseleniyPunct(naseleniyPunct.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, родившихся в населенном пункте: " + naseleniyPunct);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/live-gubernia")
+    public String searchByLiveGubernia(@RequestParam("gubernia") String gubernia, Model model) {
+        List<Person> results = personService.findByPersonsByLiveGubernia(gubernia.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, проживающих в губернии:" + gubernia);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/live-naseleniyPunct")
+    public String searchByLiveNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
+        List<Person> results = personService.findByPersonByLiveNaseleniyPunct(naseleniyPunct.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, проживающих в населенном пункте: " + naseleniyPunct);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/all-gubernia")
+    public String searchByAllGubernia(@RequestParam("gubernia") String gubernia, Model model) {
+        List<Person> results = personService.findByAllAddressGubernia(gubernia.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей связанных с губернией: " + gubernia);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
+    @GetMapping("/search/all-naseleniyPunct")
+    public String searchByAllNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
+        List<Person> results = personService.findByAllAddressNaseleniyPunct(naseleniyPunct.trim());
+        if (results.isEmpty()) {
+            throw new PersonNotFoundException("Нет людей, связанных с населенным пунктом: " + naseleniyPunct);
+        }
+        model.addAttribute("persons", results);
+        return "family-tree";
+    }
+
 
 }

@@ -13,11 +13,13 @@ public class Relationship {
     private Long id;
 
     //связь ОТ person
+    //fromPerson - родитель
     @ManyToOne //многие к одному
     @JoinColumn(name = "from_person_id", nullable = false)
     private Person fromPerson;
 
     //связь К person
+    //toPerson - ребенок
     @ManyToOne
     @JoinColumn(name = "to_person_id", nullable = false)
     private Person toPerson;
@@ -53,10 +55,12 @@ public class Relationship {
         this.gameOverDate = gameOverDate;
     }
 
+    // родитель
     public Person getFromPerson() {
         return fromPerson;
     }
 
+    //ребенок
     public Person getToPerson() {
         return toPerson;
     }
@@ -87,12 +91,12 @@ public class Relationship {
             case PAPA:return "отцом";
             case MARIDO:return "мужем";
             case ESPOSA:return "женой";
-            case HIHO:return "сыном";
+            case HIJO:return "сыном";
             case HIJA:return "дочерью";
             case MADRASTA:return "мачехой";
             case PADRASTO:return "отчимом";
             case HIJAADOPTIVA:return "приемной дочерью";
-            case NINOADOPTIVO:return "приемным сыном";
+            case NINOADOPTIVO:return "приемным ребенком";
             case HERMANO:return "братом";
             case HERMANA:return "сестрой";
             case HERMANASTRO:return "свобным братом";
@@ -108,4 +112,8 @@ public class Relationship {
             default:return role.name().toLowerCase(); //если добавили новую роль в RelationshipRole, но забыли добавить case в метод, отдаст значение
         }
    }
+
+    public RelationshipRole getRole() {
+        return role;
+    }
 }

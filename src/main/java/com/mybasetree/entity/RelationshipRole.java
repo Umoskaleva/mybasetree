@@ -6,7 +6,7 @@ public enum RelationshipRole {
     MARIDO, //муж
     ESPOSA, //жена
     HIJA, //дочка
-    HIHO, //сын
+    HIJO, //сын
     MADRASTA, //мачеха
     PADRASTO, //отчим
     HIJAADOPTIVA, //приемная дочь

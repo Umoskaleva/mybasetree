@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Профиль: ' + ${person.firstName}">Профиль</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .field { margin: 8px 0; }
+        .label { font-weight: bold; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1 th:text="${person.firstName + ' ' + (person.lastName != null ? person.lastName : '')}">Имя Фамилия</h1>
+
+<div class="field">
+    <span class="label">Пол:</span>
+    <span th:text="${person.gender == null ? 'Не указан' : person.gender}">Мужской</span>
+</div>
+
+<div th:if="${person.dateOfBirth}" class="field">
+    <span class="label">Дата рождения:</span>
+    <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span>
+</div>
+
+<div th:if="${person.dateOfDeath}" class="field">
+    <span class="label">Дата смерти:</span>
+    <span th:text="${#temporals.format(person.dateOfDeath, 'dd.MM.yyyy')}">01.01.1980</span>
+</div>
+
+<!-- Адреса -->
+<div th:if="${person.addresses != null && !person.addresses.isEmpty()}">
+    <h3>Адреса</h3>
+    <div th:each="addr : ${person.addresses}">
+        <div class="field" th:text="${addr.getFormatAddress()}">Губерния, уезд...</div>
+    </div>
+</div>
+
+<!-- Фото (если есть mainPhotoUrl) -->
+<div th:if="${person.mainPhotoUrl != null}">
+    <h3>Фотография</h3>
+    <img th:src="${person.mainPhotoUrl}" alt="Фото" style="max-width: 300px; border: 1px solid #ddd;">
+</div>
+
+<hr>
+<a href="/family-tree">← К списку</a>
+
+</body>
+</html>

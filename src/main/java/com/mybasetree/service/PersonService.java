@@ -1,14 +1,18 @@
 package com.mybasetree.service;
 
 import com.mybasetree.entity.Person;
+import com.mybasetree.entity.Relationship;
+import com.mybasetree.entity.RelationshipRole;
 import com.mybasetree.exception.PersonNotFoundException;
 import com.mybasetree.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 //@Service - Содержит всю бизнес-логику приложения. Это "мозги" операции.
@@ -26,7 +30,7 @@ public class PersonService {
                 person.getFirstName(),
                 person.getLastName(),
                 person.getDateOfBirth());
-        if(exists){
+        if (exists) {
             throw new IllegalArgumentException("Человек с таким именем, фамилией и датой рождения уже существует!");
         }
         return personRepository.save(person);
@@ -39,7 +43,7 @@ public class PersonService {
     //поиск по ID
     public Person findById(Long id) {
         return personRepository.findById(id)
-                .orElseThrow(()-> new PersonNotFoundException("Не найден человек с идентификатором " + id));
+                .orElseThrow(() -> new PersonNotFoundException("Не найден человек с идентификатором " + id));
     }
 
     //проверка существования по ID
@@ -53,9 +57,11 @@ public class PersonService {
     public List<Person> findByFirstName(String firstName) {
         return personRepository.findByFirstName(firstName);
     }
+
     public List<Person> findByLastName(String lastName) {
         return personRepository.findByLastName(lastName);
     }
+
     public List<Person> findByFirstNameAndLastName(String firstName, String lastName) {
         return personRepository.findByFirstNameAndLastName(firstName, lastName);
     }
@@ -64,31 +70,31 @@ public class PersonService {
     //поиск в АДРЕСЕ РОЖДЕНИЯ:
     ////поиск в адресе рождения по губернии
     public List<Person> findByPersonsByBirthGubernia(String gubernia) {
-       return personRepository.findByPersonsByBirthGubernia(gubernia);
+        return personRepository.findByPersonsByBirthGubernia(gubernia);
     }
 
     ////поиск в адресе рождения по населенному пункту
-    public List<Person> findByPersonsByBirthNaseleniyPunct(String naseleniyPunct){
+    public List<Person> findByPersonsByBirthNaseleniyPunct(String naseleniyPunct) {
         return personRepository.findByPersonsByBirthNaseleniyPunct(naseleniyPunct);
     }
 
     //поиск в АДРЕСЕ ПРОЖИВАНИЯ:
     ////поиск в адресе проживания по губернии
-    public List<Person> findByPersonsByLiveGubernia(String gubernia){
+    public List<Person> findByPersonsByLiveGubernia(String gubernia) {
         return personRepository.findByPersonsByLiveGubernia(gubernia);
     }
 
     ////поиск в адресе проживания по населенному пункту
-    public List<Person> findByPersonByLiveNaseleniyPunct(String naseleniyPunct){
+    public List<Person> findByPersonByLiveNaseleniyPunct(String naseleniyPunct) {
         return personRepository.findByPersonByLiveNaseleniyPunct(naseleniyPunct);
     }
 
     //поиск по ЛЮБОМУ АДРЕСУ (рождения, проживания и т д.)
-    public List<Person> findByAllAddressGubernia(String gubernia){
+    public List<Person> findByAllAddressGubernia(String gubernia) {
         return personRepository.findByAllAddressGubernia(gubernia);
     }
 
-    public List<Person> findByAllAddressNaseleniyPunct(String naseleniyPunct){
+    public List<Person> findByAllAddressNaseleniyPunct(String naseleniyPunct) {
         return personRepository.findByAllAddressNaseleniyPunct(naseleniyPunct);
     }
 
@@ -104,5 +110,14 @@ public class PersonService {
     }
 
 
-
+    //метод возвращает всех детей человека: дочка, сын, приемный сын, приемная дочка
+    public List<Person> findChildrenOf(Person parent) {
+        return parent.getRelationships().stream().filter(relationship -> (
+                        relationship.getRole() == RelationshipRole.HIJO ||
+                                relationship.getRole() == RelationshipRole.HIJA ||
+                                relationship.getRole() == RelationshipRole.HIJAADOPTIVA ||
+                                relationship.getRole() == RelationshipRole.NINOADOPTIVO))
+                .map(Relationship::getToPerson)
+                .collect(Collectors.toList());
+    }
 }
