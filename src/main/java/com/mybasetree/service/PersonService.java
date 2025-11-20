@@ -112,11 +112,12 @@ public class PersonService {
 
     //метод возвращает всех детей человека: дочка, сын, приемный сын, приемная дочка
     public List<Person> findChildrenOf(Person parent) {
-        return parent.getRelationships().stream().filter(relationship -> (
-                        relationship.getRole() == RelationshipRole.HIJO ||
-                                relationship.getRole() == RelationshipRole.HIJA ||
-                                relationship.getRole() == RelationshipRole.HIJAADOPTIVA ||
-                                relationship.getRole() == RelationshipRole.NINOADOPTIVO))
+        return parent.getRelationships().stream()
+                .filter(relationship -> (
+                        relationship.getRole() == RelationshipRole.PAPA ||
+                                relationship.getRole() == RelationshipRole.MAMA ||
+                                relationship.getRole() == RelationshipRole.PADRASTO ||
+                                relationship.getRole() == RelationshipRole.MADRASTA))
                 .map(Relationship::getToPerson)
                 .collect(Collectors.toList());
     }

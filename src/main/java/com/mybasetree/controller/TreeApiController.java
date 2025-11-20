@@ -41,16 +41,13 @@ public class TreeApiController {
             name += " " + person.getLastName();
         }
         node.setName(name);
-
-        //Получаем всех детей (HIJO = сын, HIJA = дочь, NINOADOPTIVO = приемный ребенок, HIJAADOPTIVA = приемная дочь)
+        //Получаем всех детей (MAMA = мама, PAPA = папа, PADRASTO = отчим, MADRASTA = мачеха)
         List<Person> children = personService.findChildrenOf(person);
-
         //Рекурсивно стоим поддеревья
         List<TreeNode> childNodes = new ArrayList<>();
         for (Person child : children) {
             childNodes.add(buildTree(child));
         }
-
         node.setChildren(childNodes);
         return node;
     }
@@ -58,3 +55,5 @@ public class TreeApiController {
 
 
 }
+
+//TODO: заполнить тестовыми данными базу, вызвать шаблон tree.html для проверки работы

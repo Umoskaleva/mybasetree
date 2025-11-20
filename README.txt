@@ -1,22 +1,53 @@
 # Программа для построения генеалогического дерева #
 
 ## Структура программы: ##
-src/
-├── main/
-│   ├── java/
-│   │   └── com/
-│   │       └── mybasetree/
-│   │           ├── MyBaseTreeApplication.java
-│   │           ├── entity/
-│   │           ├── repository/
-│   │           ├── service/
-│   │           └── controller/
-│   └── resources/
-│       └── application.properties
-└── test/
-    └── java/
-        └── com/
-            └── mybasetree/
+mybasetree/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com.mybasetree/
+│   │   │       ├── MyBaseTreeApplication.java          # Точка входа
+│   │   │       │
+│   │   │       ├── entity/                            # Сущности JPA
+│   │   │       │   ├── Person.java
+│   │   │       │   ├── Address.java
+│   │   │       │   ├── Photo.java
+│   │   │       │   ├── Relationship.java
+│   │   │       │   ├── Gender.java
+│   │   │       │   ├── AddressType.java
+│   │   │       │   └── RelationshipRole.java
+│   │   │       │
+│   │   │       ├── repository/                        # Репозитории
+│   │   │       │   └── PersonRepository.java
+│   │   │       │
+│   │   │       ├── service/                           # Сервисы
+│   │   │       │   └── PersonService.java
+│   │   │       │
+│   │   │       ├── controller/                        # Контроллеры
+│   │   │       │   ├── PersonWebController.java
+│   │   │       │   └── TreeApiController.java         # (опционально, для API дерева)
+│   │   │       │
+│   │   │       ├── dto/                               # Data Transfer Objects
+│   │   │       │   └── TreeNode.java                  # Узел генеалогического дерева (для JSON)
+│   │   │       │
+│   │   │       └── exception/                         # Обработка исключений
+│   │   │           ├── PersonNotFoundException.java   # Кастомное исключение
+│   │   │           └── GlobalExceptionHandler.java    # Глобальный обработчик ошибок
+│   │   │
+│   │   └── resources/
+│   │       ├── application.properties                 # Конфигурация
+│   │       └── templates/                             # HTML-шаблоны Thymeleaf
+│   │           ├── family-tree.html
+│   │           ├── person-details.html
+│   │           ├── search-form.html
+│   │           └── error.html
+│   │
+│   └── test/
+│       └── java/
+│           └── com.mybasetree/
+│               └── *Test.java                         # Тесты
+│
+└── pom.xml                                            # Зависимости Maven
 
 
 ---
