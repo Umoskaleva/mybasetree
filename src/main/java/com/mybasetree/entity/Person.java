@@ -54,6 +54,9 @@ public class Person {
     )
     private List<Address> addresses = new ArrayList<>();
 
+    @Column(name = "interesting_fact", columnDefinition = "TEXT") // TEXT для длинного текста
+    private String interestingFact;
+
 
     @OneToMany(mappedBy = "fromPerson", cascade = {CascadeType.ALL})
     // все варианты каскадных операций,в т.ч. удаление связей при удалении человека
@@ -76,7 +79,8 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public Person(String firstName, String lastName, String twoLastName, String maidenName, String surName, String nickName, Gender gender, LocalDate dateOfBirth, LocalDate dateOfMarriage, LocalDate dateOfDivorce, LocalDate dateOfDeath, List<Photo> photos, String mainPhotoUrl) {
+    //конструктор включает все поля Person
+    public Person(String firstName, String lastName, String twoLastName, String maidenName, String surName, String nickName, Gender gender, LocalDate dateOfBirth, LocalDate dateOfMarriage, LocalDate dateOfDivorce, LocalDate dateOfDeath, List<Photo> photos, String mainPhotoUrl, String interestingFact) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.twoLastName = twoLastName;
@@ -90,6 +94,12 @@ public class Person {
         this.dateOfDeath = dateOfDeath;
         this.photos = photos;
         this.mainPhotoUrl = mainPhotoUrl;
+        this.interestingFact = interestingFact;
+    }
+
+    //конструктор без поля interestingFact для обратной совместимости
+    public Person(String firstName, String lastName, String twoLastName, String maidenName, String surName, String nickName, Gender gender, LocalDate dateOfBirth, LocalDate dateOfMarriage, LocalDate dateOfDivorce, LocalDate dateOfDeath, List<Photo> photos, String mainPhotoUrl){
+        this(firstName, lastName, twoLastName, maidenName, surName, nickName, gender, dateOfBirth, dateOfMarriage, dateOfDivorce, dateOfDeath, photos, mainPhotoUrl, null);
     }
 
     public Long getId() {
@@ -156,6 +166,10 @@ public class Person {
         return relationships;
     }
 
+    public String getInterestingFact() {
+        return interestingFact;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -216,10 +230,16 @@ public class Person {
         this.mainPhotoUrl = mainPhotoUrl;
     }
 
+    public void setInterestingFact(String interestingFact) {
+        this.interestingFact = interestingFact;
+    }
+
     public void setRelationships(List<Relationship> relationships) {
         this.relationships = relationships;
     }
 
+
+    //методы для работы с адресами
 
     public Address getBirthAddress() { // вернет адрес рождения person
         return addresses.stream().filter(addr -> addr.getAddressType() == AddressType.BIRTH)

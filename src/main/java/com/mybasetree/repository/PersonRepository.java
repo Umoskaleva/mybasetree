@@ -18,7 +18,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findByLastName(String lastName); //найти по фамилии
     List<Person> findByFirstNameAndLastName(String firstName, String lastName); // поиск по имени и фамилии
 
-
     boolean existsByFirstNameAndLastNameAndDateOfBirth(String firstName, String lastName, LocalDate dateOfBirth);
 
     //поиск в адресе рождения:

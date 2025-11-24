@@ -36,6 +36,7 @@ public class PersonService {
         return personRepository.save(person);
     }
 
+    //найти все персоны
     public List<Person> findAll() { //найти все персоны
         return personRepository.findAll();
     }
@@ -120,5 +121,18 @@ public class PersonService {
                                 relationship.getRole() == RelationshipRole.MADRASTA))
                 .map(Relationship::getToPerson)
                 .collect(Collectors.toList());
+    }
+
+    //методы для работы с текстовым описанием человека
+    public String getInterestingFactForPerson(Long personId){
+        Person person = findById(personId);//проверяем существование входящего personId
+        return person.getInterestingFact();
+    }
+
+    public String updateInterestingFactForPerson(Long personId, String newFact){
+        Person person = findById(personId); //проверяем существование в базе данного id
+        person.setInterestingFact(newFact); //устанавливаем новый факт
+        personRepository.save(person);//сохраняем изменения
+        return "Текст добавлен/отредактирован для " + personId + " " + person.getFirstName();
     }
 }

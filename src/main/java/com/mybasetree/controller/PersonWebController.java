@@ -54,7 +54,7 @@ public class PersonWebController {
         if (lastName != null) lastName = lastName.trim();
         List<Person> results = new ArrayList<>();
         boolean clickedSearch = false; //начинаем искать -> поиск не запрашивался clickedSearch = false
-        if (firstName != null && firstName.isEmpty() && lastName != null && lastName.isEmpty()) {
+        if (firstName != null && firstName.isEmpty() && lastName != null && !lastName.isEmpty()) {
             results = personService.findByFirstNameAndLastName(firstName, lastName);
             clickedSearch = true; //был поиск по имени и фамилии
         } else if (firstName != null && firstName.isEmpty()) {
@@ -149,6 +149,15 @@ public class PersonWebController {
         }
         model.addAttribute("persons", results);
         return "family-tree";
+    }
+
+    @GetMapping("/person/{id}/update-fact") // POST-эндпоинт для обновления факта
+    public String updateFact(@PathVariable long id, @RequestParam String fact, Model model){
+       //вызываем сервис для обновления
+        String message = personService.updateInterestingFactForPerson(id, fact);
+        System.out.println(message);//логирование результата
+        //перенаправляем обратно на страницу деталей человека person-details.html
+        return "redirect:/person/{id}";
     }
 
 

@@ -2,46 +2,133 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Профиль: ' + ${person.firstName}">Профиль</title>
+    <title th:text="'Профиль: ' + ${person.lastName} + ' ' + ${person.firstName} + (${person.surName != null ? ' ' + person.surName : ''})">Профиль</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; }
         .field { margin: 8px 0; }
-        .label { font-weight: bold; }
+        .label { font-weight: bold; min-width: 200px; display: inline-block; }
         a { color: #0066cc; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        /* Стили для поля факта */
+        .fact-container { margin-top: 20px; }
+        .fact-label { font-weight: bold; }
+        .fact-display { background-color: #f9f9f9; padding: 10px; border-left: 3px solid #ccc; margin: 5px 0; white-space: pre-wrap; }
+        .fact-form { margin-top: 10px; }
+        .fact-input { width: 100%; min-height: 80px; resize: vertical; }
+        .fact-submit { margin-top: 5px; }
+        .fio-section { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .fio-main { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
+        .fio-additional { color: #666; font-style: italic; }
+
+        /* Новые стили для расположения фото и информации */
+        .container { display: flex; gap: 20px; align-items: flex-start; }
+        .photo-section { flex-shrink: 0; }
+        .info-section { flex-grow: 1; }
+        .person-photo {
+            width: 350px; /* Фиксированная ширина */
+            height: 450px; /* Фиксированная высота для вертикального формата */
+            object-fit: cover; /* Сохраняет пропорции, обрезая если нужно */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .no-photo {
+            width: 350px;
+            height: 450px; /* Такая же высота как у фото */
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<h1 th:text="${person.firstName + ' ' + (person.lastName != null ? person.lastName : '')}">Имя Фамилия</h1>
+<div class="container">
+    <!-- Левая колонка - фото -->
+    <div class="photo-section">
+        <div th:if="${person.mainPhotoUrl != null}">
+            <img th:src="${person.mainPhotoUrl}" alt="Фото" class="person-photo">
+        </div>
+        <div th:unless="${person.mainPhotoUrl != null}" class="no-photo">
+            Фото отсутствует
+        </div>
+    </div>
 
-<div class="field">
-    <span class="label">Пол:</span>
-    <span th:text="${person.gender == null ? 'Не указан' : person.gender}">Мужской</span>
-</div>
+    <!-- Правая колонка - информация -->
+    <div class="info-section">
+        <!-- Основная секция ФИО -->
+        <div class="fio-section">
+            <div class="fio-main">
+                <!-- Основное ФИО: Фамилия Имя Отчество -->
+                <span th:text="${person.lastName}">Фамилия</span>
+                <span th:text="${person.firstName}">Имя</span>
+                <span th:if="${person.surName != null}" th:text="' ' + ${person.surName}">Отчество</span>
+            </div>
 
-<div th:if="${person.dateOfBirth}" class="field">
-    <span class="label">Дата рождения:</span>
-    <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span>
-</div>
+            <!-- Дополнительные поля ФИО -->
+            <div class="field" th:if="${person.twoLastName != null}">
+                <span class="label">Вторая фамилия:</span>
+                <span th:text="${person.twoLastName}">Вторая фамилия</span>
+            </div>
 
-<div th:if="${person.dateOfDeath}" class="field">
-    <span class="label">Дата смерти:</span>
-    <span th:text="${#temporals.format(person.dateOfDeath, 'dd.MM.yyyy')}">01.01.1980</span>
-</div>
+            <div class="field" th:if="${person.maidenName != null}">
+                <span class="label">Девичья фамилия:</span>
+                <span th:text="${person.maidenName}">Девичья фамилия</span>
+            </div>
 
-<!-- Адреса -->
-<div th:if="${person.addresses != null && !person.addresses.isEmpty()}">
-    <h3>Адреса</h3>
-    <div th:each="addr : ${person.addresses}">
-        <div class="field" th:text="${addr.getFormatAddress()}">Губерния, уезд...</div>
+            <div class="field" th:if="${person.nickName != null}">
+                <span class="label">Прозвище:</span>
+                <span th:text="${person.nickName}">Прозвище</span>
+            </div>
+        </div>
+
+        <!-- Основная информация -->
+        <div class="field">
+            <span class="label">Пол:</span>
+            <span th:text="${person.gender == null ? 'Не указан' : person.gender}">Мужской</span>
+        </div>
+
+        <div th:if="${person.dateOfBirth}" class="field">
+            <span class="label">Дата рождения:</span>
+            <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span>
+        </div>
+
+        <div th:if="${person.dateOfDeath}" class="field">
+            <span class="label">Дата смерти:</span>
+            <span th:text="${#temporals.format(person.dateOfDeath, 'dd.MM.yyyy')}">01.01.1980</span>
+        </div>
+
+        <!-- Адреса -->
+        <div th:if="${person.addresses != null && !person.addresses.isEmpty()}">
+            <h3>Адреса</h3>
+            <div th:each="addr : ${person.addresses}">
+                <div class="field" th:text="${addr.getFormatAddress()}">Губерния, уезд...</div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Фото (если есть mainPhotoUrl) -->
-<div th:if="${person.mainPhotoUrl != null}">
-    <h3>Фотография</h3>
-    <img th:src="${person.mainPhotoUrl}" alt="Фото" style="max-width: 300px; border: 1px solid #ddd;">
+<!-- Секция для интересного факта (на всю ширину) -->
+<div class="fact-container">
+    <h3>Интересный факт</h3>
+    <div class="fact-display" th:if="${person.interestingFact != null && #strings.length(person.interestingFact) > 0}" th:text="${person.interestingFact}">
+        Тут будет интересный факт...
+    </div>
+    <div class="fact-display" th:unless="${person.interestingFact != null && #strings.length(person.interestingFact) > 0}">
+        Интересный факт пока не добавлен.
+    </div>
+
+    <!-- Форма для редактирования/добавления факта -->
+    <form class="fact-form" th:action="@{/person/{id}/update-fact(id=${person.id})}" method="post">
+        <label for="fact" class="fact-label">Редактировать/добавить:</label><br>
+        <textarea id="fact" name="fact" class="fact-input" th:field="*{currentFact}"></textarea><br>
+        <button type="submit" class="fact-submit">Сохранить факт</button>
+    </form>
 </div>
 
 <hr>
