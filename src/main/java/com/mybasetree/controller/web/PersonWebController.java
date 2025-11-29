@@ -1,4 +1,4 @@
-package com.mybasetree.controller;
+package com.mybasetree.controller.web;
 
 import com.mybasetree.entity.Person;
 import com.mybasetree.exception.PersonNotFoundException;
@@ -26,6 +26,7 @@ public class PersonWebController {
     @Autowired
     private PersonService personService;
 
+    //показать дерево семьи в виде списка
     @GetMapping("/family-tree")
     public String showFamilyTree(Model model) {
         List<Person> persons = personService.findAll();
@@ -33,6 +34,7 @@ public class PersonWebController {
         return "family-tree"; // имя HTML шаблона
     }
 
+    //показать детально данные о персоне
     @GetMapping("/person/{id}")
     public String showPersonDetails(@PathVariable Long id, Model model) {
         Person person = personService.findById(id);
@@ -43,34 +45,26 @@ public class PersonWebController {
         return "person-details";// имя HTML шаблона
     }
 
-
-    //поиск по имени и фамилии/только по имени/только по фамилии
-    @GetMapping("/search")
-    public String search(@RequestParam(required = false) String firstName,
-                         @RequestParam(required = false) String lastName,
-                         Model model) {
-        //убираем лишние пробелы
-        if (firstName != null) firstName = firstName.trim();
-        if (lastName != null) lastName = lastName.trim();
-        List<Person> results = new ArrayList<>();
-        boolean clickedSearch = false; //начинаем искать -> поиск не запрашивался clickedSearch = false
-        if (firstName != null && firstName.isEmpty() && lastName != null && !lastName.isEmpty()) {
-            results = personService.findByFirstNameAndLastName(firstName, lastName);
-            clickedSearch = true; //был поиск по имени и фамилии
-        } else if (firstName != null && firstName.isEmpty()) {
-            results = personService.findByFirstName(firstName);
-            clickedSearch = true; //был поиск по имени
-        } else if (lastName != null && lastName.isEmpty()) {
-            results = personService.findByLastName(lastName);
-            clickedSearch = true; //был поиск по фамилии
-        }
-        if (clickedSearch && results.isEmpty()) {
-            throw new PersonNotFoundException("Человек с указанными данными не найден в базе");
-        }
-        model.addAttribute("persons", results);
-        return "family-tree";
+    //показать форму поиска
+    @GetMapping("/search-form")
+    public String showSearchForm(){
+        return "search-form";
     }
 
+    //поиск по имени и фамилии
+    @GetMapping("/search")
+    public String searchByFirstNameAndLastName(@RequestParam String firstName,
+                                               @RequestParam String lastName,
+                                               Model model){
+        List<Person> persons = personService.findByFirstNameAndLastName(firstName, lastName);
+        model.addAttribute("persons", persons);
+        if(persons.isEmpty()){
+            model.addAttribute("errorMessage", "Ничего не найдено по запросу: " + firstName + " " + lastName);
+        }
+        return "family-tree";//возвращаем на шаблон family-tree со списком людей
+    }
+
+    //показать людей родившихся до ДАТЫ
     @GetMapping("/search/before")
     public String searchBeforeDate(@RequestParam("date") LocalDate date, Model model) {
         List<Person> results = personService.findByDateOfBirthBefore(date);
@@ -81,6 +75,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать людей родившихся после ДАТЫ
     @GetMapping("/search/after")
     public String searchAfterDate(@RequestParam("date") LocalDate date, Model model) {
         List<Person> results = personService.findByDateOfBirthAfter(date);
@@ -91,6 +86,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать людей родившихся в ГУБЕРНИИ
     @GetMapping("/search/birth-gubernia")
     public String searchByBirthGubernia(@RequestParam("gubernia") String gubernia, Model model) {
         List<Person> results = personService.findByPersonsByBirthGubernia(gubernia.trim());
@@ -101,6 +97,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать людей родившихся в НАСЕЛЕННОМ ПУНКТЕ
     @GetMapping("/search/birth-naseleniyPunct")
     public String searchByBirthNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
         List<Person> results = personService.findByPersonsByBirthNaseleniyPunct(naseleniyPunct.trim());
@@ -111,6 +108,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать людей живших в ГУБЕРНИИ
     @GetMapping("/search/live-gubernia")
     public String searchByLiveGubernia(@RequestParam("gubernia") String gubernia, Model model) {
         List<Person> results = personService.findByPersonsByLiveGubernia(gubernia.trim());
@@ -121,6 +119,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать людей живших в НАСЕЛЕННОМ ПУНКТЕ
     @GetMapping("/search/live-naseleniyPunct")
     public String searchByLiveNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
         List<Person> results = personService.findByPersonByLiveNaseleniyPunct(naseleniyPunct.trim());
@@ -131,6 +130,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать всех людей в ГУБЕРНИИ
     @GetMapping("/search/all-gubernia")
     public String searchByAllGubernia(@RequestParam("gubernia") String gubernia, Model model) {
         List<Person> results = personService.findByAllAddressGubernia(gubernia.trim());
@@ -141,6 +141,7 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать всех людей в НАСЕЛЕННОМ ПУНКТЕ
     @GetMapping("/search/all-naseleniyPunct")
     public String searchByAllNaseleniyPunct(@RequestParam("naseleniyPunct") String naseleniyPunct, Model model) {
         List<Person> results = personService.findByAllAddressNaseleniyPunct(naseleniyPunct.trim());
@@ -151,9 +152,10 @@ public class PersonWebController {
         return "family-tree";
     }
 
+    //показать подробную инфу о человеке
     @GetMapping("/person/{id}/update-fact") // POST-эндпоинт для обновления факта
-    public String updateFact(@PathVariable long id, @RequestParam String fact, Model model){
-       //вызываем сервис для обновления
+    public String updateFact(@PathVariable long id, @RequestParam String fact, Model model) {
+        //вызываем сервис для обновления
         String message = personService.updateInterestingFactForPerson(id, fact);
         System.out.println(message);//логирование результата
         //перенаправляем обратно на страницу деталей человека person-details.html

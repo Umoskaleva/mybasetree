@@ -1,7 +1,7 @@
-package com.mybasetree.controller;
+package com.mybasetree.controller.api;
 
 
-import com.mybasetree.dto.TreeNode;
+import com.mybasetree.controller.dto.TreeNode;
 import com.mybasetree.entity.Person;
 import com.mybasetree.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,4 +56,4 @@ public class TreeApiController {
 
 }
 
-//TODO: заполнить тестовыми данными базу, вызвать шаблон tree.html для проверки работы
+

@@ -1,4 +1,4 @@
-package com.mybasetree.dto;
+package com.mybasetree.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 public class TreeNode {
     private String name;
     private List<TreeNode> children = new ArrayList<>();
+    private Long id;
 
     public String getName() {
         return name;
@@ -18,11 +19,18 @@ public class TreeNode {
         return children;
     }
 
+    public Long getId() {
+        return id;
+    }
     public void setName(String name) {
         this.name = name;
     }
 
     public void setChildren(List<TreeNode> children) {
         this.children = children;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

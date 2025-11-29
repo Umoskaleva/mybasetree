@@ -25,7 +25,8 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Person createPerson(Person person) { // создаем персону
+    //создаем персону и проверяем на дубликаты
+    public Person createPerson(Person person) {
         boolean exists = personRepository.existsByFirstNameAndLastNameAndDateOfBirth(
                 person.getFirstName(),
                 person.getLastName(),
@@ -35,6 +36,13 @@ public class PersonService {
         }
         return personRepository.save(person);
     }
+
+
+    //сохраним(обновим) персону без проверки на дубликаты
+    public Person save(Person person) {
+        return personRepository.save(person);
+    }
+
 
     //найти все персоны
     public List<Person> findAll() { //найти все персоны
@@ -124,15 +132,34 @@ public class PersonService {
     }
 
     //методы для работы с текстовым описанием человека
-    public String getInterestingFactForPerson(Long personId){
+    public String getInterestingFactForPerson(Long personId) {
         Person person = findById(personId);//проверяем существование входящего personId
         return person.getInterestingFact();
     }
 
-    public String updateInterestingFactForPerson(Long personId, String newFact){
+    public String updateInterestingFactForPerson(Long personId, String newFact) {
         Person person = findById(personId); //проверяем существование в базе данного id
         person.setInterestingFact(newFact); //устанавливаем новый факт
         personRepository.save(person);//сохраняем изменения
         return "Текст добавлен/отредактирован для " + personId + " " + person.getFirstName();
     }
+
+    //создаем связи между людьми
+    //Связь добавляется к списку связей 'fromPerson'. Сохраняется в базе данных
+    //@param fromPerson Человек, который является "от кого" в связи (напримре, родитель)
+    //@param toPerson Человек, который "к кому" в связи (например, ребенок)
+    //@param role Роль 'fromPerson' по отношению 'toPerson' (мама, папа)
+    public void createRelationship(Person fromPerson, Person toPerson, RelationshipRole role) {
+        //создаем новый обьект Relationship
+        Relationship relationship = new Relationship();
+        relationship.setFromPerson(fromPerson);
+        relationship.setToPerson(toPerson);
+        relationship.setRole(role);
+        fromPerson.getRelationships().add(relationship);
+
+        //Сохраним 'fromPerson' благодаря cascade = CascadeType.ALL
+        //новая связь будет в базе данных
+        save(fromPerson);
+    }
+
 }

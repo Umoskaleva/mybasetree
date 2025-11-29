@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="tree-node(node)">
+    <div class="tree-node">
+        <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}">Имя</a>
+    </div>
+
+    <div th:if="${node.children != null and not node.children.empty}" class="children-container">
+        <div th:each="child : ${node.children}" class="child-node">
+            <div th:replace="~{tree-fragment :: tree-node(${child})}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

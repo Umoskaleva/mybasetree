@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор корневого узла дерева</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .person-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .person-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .person-item:hover {
+            background: #e9ecef;
+        }
+
+        .person-link {
+            display: block;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .person-link:hover {
+            color: #e74c3c;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .nav-button:hover {
+            background: #2980b9;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Выберите корневой узел для дерева</h1>
+
+    <a href="/family-tree" class="nav-button">← К списку людей</a>
+
+    <div th:if="${persons.empty}" class="empty-message">
+        <h3>Нет людей в базе данных</h3>
+        <p>Добавьте людей, чтобы построить генеалогическое дерево.</p>
+    </div>
+
+    <ul th:unless="${persons.empty}" class="person-list">
+        <li th:each="person : ${persons}" class="person-item">
+            <a th:href="@{/tree/{id}(id=${person.id})}"
+               class="person-link"
+               th:text="${person.lastName + ' ' + person.firstName + (person.surName != null ? ' ' + person.surName : '')}">
+                Фамилия Имя Отчество
+            </a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

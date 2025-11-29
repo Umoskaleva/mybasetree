@@ -35,7 +35,9 @@ mybasetree/
 │   │   │           └── GlobalExceptionHandler.java    # Глобальный обработчик ошибок
 │   │   │
 │   │   └── resources/
-│   │       ├── application.properties                 # Конфигурация
+│   │           ├── application.properties              # Общие настройки (отсутствует)
+                ├── application-dev.properties          # Для разработки
+                └── application-prod.properties         # Для продакшена
 │   │       └── templates/                             # HTML-шаблоны Thymeleaf
 │   │           ├── family-tree.html
 │   │           ├── person-details.html

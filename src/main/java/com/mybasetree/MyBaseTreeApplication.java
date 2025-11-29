@@ -14,7 +14,5 @@ import java.util.Objects;
 public class MyBaseTreeApplication {
     public static void main(String[] args) {
         SpringApplication.run(MyBaseTreeApplication.class, args); // Запуск
-
-
     }
 }
