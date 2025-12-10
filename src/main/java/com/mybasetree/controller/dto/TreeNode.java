@@ -9,6 +9,7 @@ import java.util.List;
 public class TreeNode {
     private String name;
     private List<TreeNode> children = new ArrayList<>();
+    private List<TreeNode> partners = new ArrayList<>();
     private Long id;
 
     public String getName() {
@@ -22,6 +23,11 @@ public class TreeNode {
     public Long getId() {
         return id;
     }
+
+    public List<TreeNode> getPartners() {
+        return partners;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -32,5 +38,9 @@ public class TreeNode {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setPartners(List<TreeNode> partners) {
+        this.partners = partners;
     }
 }

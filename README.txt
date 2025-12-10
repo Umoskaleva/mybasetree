@@ -5,51 +5,70 @@ mybasetree/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com.mybasetree/
-│   │   │       ├── MyBaseTreeApplication.java          # Точка входа
-│   │   │       │
-│   │   │       ├── entity/                            # Сущности JPA
-│   │   │       │   ├── Person.java
-│   │   │       │   ├── Address.java
-│   │   │       │   ├── Photo.java
-│   │   │       │   ├── Relationship.java
-│   │   │       │   ├── Gender.java
-│   │   │       │   ├── AddressType.java
-│   │   │       │   └── RelationshipRole.java
-│   │   │       │
-│   │   │       ├── repository/                        # Репозитории
-│   │   │       │   └── PersonRepository.java
-│   │   │       │
-│   │   │       ├── service/                           # Сервисы
-│   │   │       │   └── PersonService.java
-│   │   │       │
-│   │   │       ├── controller/                        # Контроллеры
-│   │   │       │   ├── PersonWebController.java
-│   │   │       │   └── TreeApiController.java         # (опционально, для API дерева)
-│   │   │       │
-│   │   │       ├── dto/                               # Data Transfer Objects
-│   │   │       │   └── TreeNode.java                  # Узел генеалогического дерева (для JSON)
-│   │   │       │
-│   │   │       └── exception/                         # Обработка исключений
-│   │   │           ├── PersonNotFoundException.java   # Кастомное исключение
-│   │   │           └── GlobalExceptionHandler.java    # Глобальный обработчик ошибок
+│   │   │   └── com/
+│   │   │       └── mybasetree/
+│   │   │           ├── MyBaseTreeApplication.java         # Точка входа
+│   │   │           ├── TestPerson.java                    # Тестовый класс в корне пакета
+│   │   │           │
+│   │   │           ├── entity/                            # Сущности JPA
+│   │   │           │   ├── Person.java
+│   │   │           │   ├── Address.java
+│   │   │           │   ├── Photo.java
+│   │   │           │   ├── Relationship.java
+│   │   │           │   ├── Gender.java
+│   │   │           │   ├── AddressType.java
+│   │   │           │   └── RelationshipRole.java
+│   │   │           │
+│   │   │           ├── repository/                        # Репозитории
+│   │   │           │   ├── PersonRepository.java
+│   │   │           │   └── AddressRepository.java
+│   │   │           │
+│   │   │           ├── service/                           # Сервисы
+│   │   │           │   ├── PersonService.java
+│   │   │           │   └── AddressService.java
+│   │   │           │
+│   │   │           ├── controller/                        # Контроллеры
+│   │   │           │   ├── api/                           # API контроллеры
+│   │   │           │   │   ├── PersonApiController.java
+│   │   │           │   │   └── TreeApiController.java
+│   │   │           │   ├── web/                           # Web контроллеры
+│   │   │           │   │   ├── PersonWebController.java
+│   │   │           │   │   └── TreeWebController.java
+│   │   │           │   └── dto/                           # Data Transfer Objects
+│   │   │           │       └── TreeNode.java              # Узел генеалогического дерева (для JSON)
+│   │   │           │
+│   │   │           └── exception/                         # Обработка исключений
+│   │   │               ├── PersonNotFoundException.java   # Кастомное исключение
+│   │   │               └── GlobalExceptionHandler.java    # Глобальный обработчик ошибок
 │   │   │
 │   │   └── resources/
-│   │           ├── application.properties              # Общие настройки (отсутствует)
-                ├── application-dev.properties          # Для разработки
-                └── application-prod.properties         # Для продакшена
-│   │       └── templates/                             # HTML-шаблоны Thymeleaf
-│   │           ├── family-tree.html
-│   │           ├── person-details.html
-│   │           ├── search-form.html
-│   │           └── error.html
+│   │       ├── static/
+│   │       │   ├── css/
+│   │       │   │   └── style.css
+│   │       │   └── js/
+│   │       │       └── app.js
+│   │       │
+│   │       ├── templates/                                  # HTML-шаблоны Thymeleaf
+│   │       │   ├── error.html
+│   │       │   ├── family-tree.html
+│   │       │   ├── person-details.html
+│   │       │   ├── search-form.html
+│   │       │   ├── tree.html
+│   │       │   ├── tree-fragment.html
+│   │       │   └── tree-selector.html
+│   │       │
+│   │       ├── application.properties                      # Общие настройки
+│   │       ├── application-dev.properties                  # Для разработки
+│   │       ├── application-prod.properties                 # Для продакшена
+│   │       └── data.sql
 │   │
 │   └── test/
 │       └── java/
-│           └── com.mybasetree/
-│               └── *Test.java                         # Тесты
+│           └── com/
+│               └── mybasetree/
+│                   └── TestPerson                          # Тесты
 │
-└── pom.xml                                            # Зависимости Maven
+└── pom.xml                                                 # Зависимости Maven
 
 
 ---

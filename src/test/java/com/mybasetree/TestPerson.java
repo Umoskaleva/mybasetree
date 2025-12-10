@@ -3,13 +3,21 @@ package com.mybasetree;
 import com.mybasetree.entity.Address;
 import com.mybasetree.entity.AddressType;
 import com.mybasetree.entity.Person;
+import com.mybasetree.entity.RelationshipRole;
+import com.mybasetree.repository.PersonRepository;
+import com.mybasetree.service.PersonService;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.repository.query.Param;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+@SpringBootTest
 public class TestPerson {
     public static void main(String[] args){
+
         Address birthAddress = new Address("Нижегородская",
                 "Нижегородский",
                 "Нижегородская",
@@ -35,7 +43,12 @@ public class TestPerson {
         System.out.println(person.toString());
 
 
+
     }
+
+
+
+
 }
 
 

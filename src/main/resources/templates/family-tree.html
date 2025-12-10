@@ -22,7 +22,7 @@
 <div th:if="${persons != null && !persons.isEmpty()}">
     <div th:each="person : ${persons}" class="person">
         <h3>
-            <a th:href="@{/person/{id}(id=${person.id})}" th:text="${person.firstName + ' ' + person.lastName}">Имя Фамилия</a>
+            <a th:href="@{/person/{id}(id=${person.id})}" th:text="${person.lastName + ' ' + person.firstName + ' ' + person.surName}">Фамилия Имя Отчество</a>
         </h3>
         <p th:if="${person.dateOfBirth}">Родился(ась): <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span></p>
         <p th:if="${person.getBirthAddress()}">
@@ -42,3 +42,7 @@
 
 </body>
 </html>
+
+
+
+

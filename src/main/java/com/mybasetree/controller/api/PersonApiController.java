@@ -3,6 +3,7 @@ package com.mybasetree.controller.api;
 import com.mybasetree.entity.Person;
 import com.mybasetree.entity.Relationship;
 import com.mybasetree.entity.RelationshipRole;
+import com.mybasetree.exception.PersonNotFoundException;
 import com.mybasetree.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,32 +24,11 @@ public class PersonApiController {
 
     //ОБНОВЛЕНИЕ данных персоны
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person personDetails) {
-        Person existing = personService.findById(id);
-        if (existing == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        //Обновляем поля
-        existing.setFirstName(personDetails.getFirstName());
-        existing.setLastName(personDetails.getLastName());
-        existing.setSurName(personDetails.getSurName());
-        existing.setTwoLastName(personDetails.getTwoLastName());
-        existing.setMaidenName(personDetails.getMaidenName());
-        existing.setNickName(personDetails.getNickName());
-        existing.setGender(personDetails.getGender());
-        existing.setDateOfBirth(personDetails.getDateOfBirth());
-        existing.setDateOfMarriage(personDetails.getDateOfMarriage());
-        existing.setDateOfDivorce(personDetails.getDateOfDivorce());
-        existing.setDateOfDeath(personDetails.getDateOfDeath());
-        existing.setAddresses(personDetails.getAddresses());
-        existing.setPhotos(personDetails.getPhotos());
-        existing.setMainPhotoUrl(personDetails.getMainPhotoUrl());
-        existing.setInterestingFact(personDetails.getInterestingFact());
-
-        Person updated = personService.save(existing); //сохраняем обновленную персону
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person personDitails) {
+            Person updated = personService.updatePerson(id, personDitails);
+            return ResponseEntity.ok(updated);
     }
+
 
     //создаем связи между персонами Родитель -> Ребенок
     @PostMapping("/{fromId}/relationships")

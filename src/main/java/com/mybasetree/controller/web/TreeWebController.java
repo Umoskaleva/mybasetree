@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 //шаблоны:
@@ -47,23 +49,29 @@ public class TreeWebController {
     }
 
     //показать визуальное дерево для конкретного человека
-    @GetMapping("/tree")
+    @GetMapping("/selector")
     public String showTree(Model model){
         model.addAttribute("persons", personService.findAll());
         return "tree-selector";
     }
 
 
-    //метод построения дерева (как в TreeApiController)
     private TreeNode buildTree(Person person) {
         TreeNode node = new TreeNode();
-        String name = person.getFirstName();
+        List<String> namePart = new ArrayList<>();
         if (person.getLastName() != null && !person.getLastName().isEmpty()) {
-            name += " " + person.getLastName();
+            namePart.add(person.getLastName());
+        } if (person.getFirstName() != null && !person.getFirstName().isEmpty()){
+            namePart.add(person.getFirstName());
+        } if (person.getSurName() != null && !person.getSurName().isEmpty()){
+            namePart.add(person.getSurName());
         }
-        node.setName(name);
+        //собираем все части ФИО
+        String allParts = String.join(" ", namePart);
+        node.setName(allParts);
         //добавляем ID для ссылок в веб-интерфейсе
         node.setId(person.getId());
+
         //Получаем всех детей (MAMA = мама, PAPA = папа, PADRASTO = отчим, MADRASTA = мачеха)
         List<Person> children = personService.findChildrenOf(person);
         //Рекурсивно стоим поддеревья
@@ -71,17 +79,17 @@ public class TreeWebController {
         for (Person child : children) {
             childNodes.add(buildTree(child));
         }
+
+        //получаем всех жен (ESPOSA = жена, MARIDO = муж)
+        List<Person> partners = personService.findPartnersOf(person);
+        List<TreeNode> partnersNode = new ArrayList<>();
+        for (Person partner : partners) {
+            partnersNode.add(buildTree(partner));
+        }
+
         node.setChildren(childNodes);
+        node.setPartners(partnersNode);
         return node;
     }
-
-//    //показать дерево семьи в виде дерева узлов
-//    @GetMapping("/tree")
-//    public String showTree(@RequestParam(required = false) Long rootId, Model model){
-//        model.addAttribute("rootId", rootId != null ? rootId : 1);
-//        return "tree"; //шаблон tree.html
-//    }
-
-
 
 }

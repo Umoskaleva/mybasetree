@@ -2,7 +2,9 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Генеалогическое дерево: ' + ${rootPerson.firstName} + ' ' + ${rootPerson.lastName}">Генеалогическое дерево</title>
+    <th:block th:with="title=${'Генеалогическое дерево: ' + rootPerson.lastName + ' ' + rootPerson.firstName + ' ' + rootPerson.surName}">
+        <title th:text="${title}">Генеалогическое дерево</title>
+    </th:block>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,9 +26,15 @@
             border-bottom: 2px solid #e0e0e0;
         }
 
+        .couple-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
         .tree-node {
-            display: inline-block;
-            margin: 10px;
             padding: 15px;
             background: #fff;
             border: 2px solid #4CAF50;
@@ -34,6 +42,11 @@
             text-align: center;
             min-width: 150px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tree-node.partner {
+            border-color: #e74c3c;
+            background: #fff5f5;
         }
 
         .tree-node a {
@@ -47,6 +60,32 @@
             text-decoration: underline;
         }
 
+        /* Соединительная линия между супругами */
+        .partners-connector-top {
+            width: 40px;
+            height: 2px;
+            background: #95a5a6;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .partners-connector-top::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e74c3c;
+            font-size: 12px;
+        }
+
+        /* Контейнер для партнеров */
+        .partners-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Дети */
         .children-container {
             display: flex;
             justify-content: center;
@@ -62,6 +101,7 @@
             width: 2px;
             height: 20px;
             background: #ccc;
+            transform: translateX(-50%);
         }
 
         .child-node {
@@ -77,6 +117,7 @@
             width: 2px;
             height: 20px;
             background: #ccc;
+            transform: translateX(-50%);
         }
 
         .child-node::after {
@@ -89,6 +130,7 @@
             left: -15px;
         }
 
+        /* Навигация */
         .navigation {
             margin-bottom: 20px;
             text-align: center;
@@ -115,6 +157,11 @@
             font-style: italic;
             padding: 40px;
         }
+
+        /* Отступы между партнерами */
+        .partner-spacing {
+            width: 20px;
+        }
     </style>
 </head>
 <body>
@@ -127,18 +174,16 @@
 
 <div class="tree-container">
     <div class="tree-header">
-        <h1 th:text="'Генеалогическое дерево: ' + ${rootPerson.firstName} + ' ' + ${rootPerson.lastName}">
-            Генеалогическое дерево
-        </h1>
+        <h1 th:text="'Генеалогическое дерево: ' + ${rootPerson.lastName} + ' ' + ${rootPerson.firstName} + ' ' + ${rootPerson.surName}">Генеалогическое дерево</h1>
         <p>Нажмите на имя человека для просмотра его профиля</p>
     </div>
 
-    <div th:if="${treeNode == null or treeNode.children == null or treeNode.children.empty}" class="empty-tree">
+    <div th:if="${treeNode == null}" class="empty-tree">
         <h3>Дерево пусто</h3>
-        <p>У выбранного человека нет детей в базе данных.</p>
+        <p>Данные дерева не найдены.</p>
     </div>
 
-    <div th:unless="${treeNode.children.empty}">
+    <div th:if="${treeNode != null}">
         <!-- Рекурсивное отображение дерева -->
         <div th:replace="~{tree-fragment :: tree-node(${treeNode})}"></div>
     </div>

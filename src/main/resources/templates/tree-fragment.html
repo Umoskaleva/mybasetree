@@ -1,16 +1,62 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="tree-node(node)">
-    <div class="tree-node">
-        <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}">Имя</a>
-    </div>
+<th:block th:fragment="tree-node(node)">
+    <div class="family-level" th:if="${node != null}">
 
-    <div th:if="${node.children != null and not node.children.empty}" class="children-container">
-        <div th:each="child : ${node.children}" class="child-node">
-            <div th:replace="~{tree-fragment :: tree-node(${child})}"></div>
+        <!-- Основной блок с человеком и его супругами -->
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 40px;">
+
+            <!-- Основной человек -->
+            <div class="tree-node">
+                <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}">Имя</a>
+            </div>
+
+            <!-- Если есть супруги -->
+            <div th:if="${node.partners != null and not #lists.isEmpty(node.partners)}"
+                 style="display: flex; align-items: center;">
+
+                <!-- Соединительная линия -->
+                <div style="width: 40px; height: 2px; background: #95a5a6; margin: 0 10px; position: relative;">
+                    <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); color: #e74c3c; font-size: 12px;">♥</div>
+                </div>
+
+                <!-- Супруги -->
+                <div style="display: flex; align-items: center;">
+                    <div th:each="partner : ${node.partners}">
+                        <div class="tree-node" style="border-color: #e74c3c; background: #fff5f5;">
+                            <a th:href="@{/person/{id}(id=${partner.id})}" th:text="${partner.name}">Супруг</a>
+                        </div>
+
+                        <!-- Отступ между супругами, если их несколько -->
+                        <div th:if="${not partnerStat.last}"
+                             style="width: 20px; height: 2px; background: #95a5a6; margin: 0 10px;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Дети -->
+        <div th:if="${node.children != null and not #lists.isEmpty(node.children)}"
+             style="display: flex; justify-content: center; position: relative; margin-top: 20px;">
+
+            <!-- Вертикальная линия к детям -->
+            <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>
+
+            <!-- Горизонтальная линия -->
+            <div style="position: absolute; top: -10px; left: 25%; right: 25%; height: 2px; background: #ccc;"></div>
+
+            <!-- Узлы детей -->
+            <div th:each="child : ${node.children}" style="margin: 0 15px; position: relative;">
+                <!-- Вертикальная линия к конкретному ребенку -->
+                <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>
+
+                <!-- Рекурсивный вызов -->
+                <div th:replace="~{tree-fragment :: tree-node(${child})}"></div>
+            </div>
+        </div>
+
     </div>
-</div>
+</th:block>
 </body>
 </html>

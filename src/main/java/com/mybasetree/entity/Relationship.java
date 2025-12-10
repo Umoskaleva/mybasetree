@@ -29,9 +29,17 @@ public class Relationship {
     @Column(name = "role", nullable = false)
     private RelationshipRole role;
 
+    //дата начала связи (брак, рождение, усыновление)
+    @Column(name = "startDate")
+    private LocalDate startDate;
+
     //дата окончания связи (смерть, развод)
     @Column(name = "gameOver_Date")
     private LocalDate gameOverDate;
+
+    //текстовое примечание
+    @Column(name = "notes")
+    private String notes;
 
     public Relationship() {
 
@@ -43,6 +51,19 @@ public class Relationship {
         this.fromPerson = fromPerson;
         this.toPerson = toPerson;
         this.role = role;
+    }
+
+    public Relationship(Person fromPerson,
+                        Person toPerson,
+                        RelationshipRole role,
+                        LocalDate startDate,
+                        LocalDate gameOverDate, String notes){
+        this.fromPerson = fromPerson;
+        this.toPerson = toPerson;
+        this.role = role;
+        this.startDate = startDate;
+        this.gameOverDate = gameOverDate;
+        this.notes = notes;
     }
 
     public Relationship(Person fromPerson,
@@ -69,6 +90,18 @@ public class Relationship {
         return gameOverDate;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
     public void setFromPerson(Person fromPerson) {
         this.fromPerson = fromPerson;
     }
@@ -79,6 +112,18 @@ public class Relationship {
 
     public void setRole(RelationshipRole role) {
         this.role = role;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public void setGameOverDate(LocalDate gameOverDate) {

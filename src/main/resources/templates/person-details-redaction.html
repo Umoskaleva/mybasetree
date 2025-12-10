@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Профиль: ' + ${person.lastName} + ' ' + ${person.firstName} + (${person.surName != null ? ' ' + person.surName : ''})">Профиль</title>
+    <title th:text="'Редактирование профиля: ' + ${person.lastName} + ' ' + ${person.firstName}">Редактирование профиля</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; }
         .field { margin: 8px 0; }
@@ -38,6 +38,41 @@
             min-height: 60px;
         }
 
+        /* Стили для формы редактирования внизу */
+        .edit-fact-container {
+            margin-top: 50px;
+            padding: 25px;
+            border-top: 3px solid #ccc;
+            background-color: #f8f8f8;
+            text-align: left;
+        }
+        .edit-fact-form {
+            width: 100%;
+        }
+        .fact-input {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+        .fact-submit {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .fact-submit:hover {
+            background-color: #0055aa;
+        }
+
         .fio-section { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
         .fio-main { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
         .fio-additional { color: #666; font-style: italic; }
@@ -66,9 +101,52 @@
             font-size: 16px;
             text-align: center;
         }
+
+        /* Стили для формы редактирования профиля */
+        .edit-profile-form {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .edit-profile-form input,
+        .edit-profile-form select,
+        .edit-profile-form textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+        .edit-profile-form button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-profile-form button:hover {
+            background-color: #218838;
+        }
+
+        /* Стили для заголовка страницы редактирования */
+        .page-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066cc;
+        }
     </style>
 </head>
 <body>
+
+<!-- Заголовок "Редактирование профиля" добавлен здесь -->
+<div class="page-title">Редактирование профиля</div>
 
 <div class="container">
     <!-- Левая колонка - фото -->
@@ -146,6 +224,54 @@
     </div>
 </div>
 
+<!-- Форма для редактирования профиля (без поля интересного факта) -->
+<div class="edit-profile-form">
+    <h3>Редактировать профиль</h3>
+    <form th:action="@{/person/{id}/edit(id=${person.id})}" method="post">
+        <div class="field">
+            <label class="label">Имя:</label>
+            <input type="text" name="firstName" th:value="${person.firstName}" required>
+        </div>
+        <div class="field">
+            <label class="label">Фамилия:</label>
+            <input type="text" name="lastName" th:value="${person.lastName}" required>
+        </div>
+        <div class="field">
+            <label class="label">Отчество:</label>
+            <input type="text" name="surName" th:value="${person.surName}">
+        </div>
+        <div class="field">
+            <label class="label">Пол:</label>
+            <select name="gender">
+                <option value="">Не указан</option>
+                <option th:selected="${person.gender == 'MALE'}" value="MALE">Мужской</option>
+                <option th:selected="${person.gender == 'FEMALE'}" value="FEMALE">Женский</option>
+            </select>
+        </div>
+        <div class="field">
+            <label class="label">Дата рождения:</label>
+            <input type="date" name="dateOfBirth" th:value="${#temporals.format(person.dateOfBirth, 'yyyy-MM-dd')}">
+        </div>
+        <div class="field">
+            <label class="label">Дата смерти:</label>
+            <input type="date" name="dateOfDeath" th:value="${#temporals.format(person.dateOfDeath, 'yyyy-MM-dd')}">
+        </div>
+
+        <!-- Кнопка отправки -->
+        <button type="submit">Сохранить изменения профиля</button>
+    </form>
+</div>
+
+<!-- Отдельная секция для редактирования интересного факта внизу страницы -->
+<div class="edit-fact-container">
+    <h3>Редактировать интересный факт</h3>
+    <form class="edit-fact-form" th:action="@{/person/{id}/update-fact(id=${person.id})}" method="post">
+        <label for="fact" class="fact-label">Введите интересный факт:</label><br>
+        <textarea id="fact" name="fact" class="fact-input" placeholder="Введите интересный факт о человеке..." th:text="${person.interestingFact}"></textarea><br>
+        <button type="submit" class="fact-submit">Сохранить интересный факт</button>
+    </form>
+</div>
+
 <hr>
 <a href="/family-tree">← К списку</a>
 
@@ -153,15 +279,12 @@
     <a th:href="@{/tree/{id}(id=${person.id})}" class="nav-button">Показать генеалогическое дерево</a>
 </div>
 
-<!-- Ссылка на страницу редактирования -->
-<div style="margin-top: 30px; padding: 20px; border-top: 2px solid #eee;">
-    <a th:href="@{/person/{id}/redaction(id=${person.id})}">
-        ✏️ Редактировать профиль и интересный факт
+<hr>
+<div style="margin-top: 20px;">
+    <a th:href="@{/person/{id}(id=${person.id})}" style="font-size: 1.1em; color: #0066cc;">
+        ← Вернуться к просмотру профиля
     </a>
 </div>
 
 </body>
 </html>
-
-
-

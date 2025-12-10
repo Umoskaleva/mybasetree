@@ -11,12 +11,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-//@Repository - Отвечает за взаимодействие с базой данных. Это прослойка между приложением и СУБД.
+
+//@Repository - Отвечает за взаимодействие с базой данных. Это прослойка между приложением и БД.
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findByFirstName(String firstName);//найти по имени
     List<Person> findByLastName(String lastName); //найти по фамилии
     List<Person> findByFirstNameAndLastName(String firstName, String lastName); // поиск по имени и фамилии
+
 
     boolean existsByFirstNameAndLastNameAndDateOfBirth(String firstName, String lastName, LocalDate dateOfBirth);
 

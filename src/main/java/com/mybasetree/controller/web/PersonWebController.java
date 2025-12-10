@@ -163,4 +163,15 @@ public class PersonWebController {
     }
 
 
+    @GetMapping("person/{id}/redaction")
+    //редактирование общей информации (ФИО, дыта и тд) и интересного факта (описание) о человеке
+    public String showRedactionForm(@PathVariable("id") Long id, Model model){
+        //получаем данные о человеке из БД
+        Person person = personService.findById(id);
+        //добавляем обьект в модель
+        model.addAttribute("person", person);
+        return "person-details-redaction";
+    }
+
+
 }
