@@ -3,45 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Генеалогическое древо</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        .person { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
-        .error { color: red; background: #ffe6e6; padding: 10px; margin: 10px 0; }
-        a { text-decoration: none; color: #0066cc; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключение иконок Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Генеалогическое древо</h1>
+<div class="container py-5">
 
-<!-- Сообщение об ошибке (например, "ничего не найдено") -->
-<div th:if="${errorMessage}" class="error" th:text="${errorMessage}">Ошибка поиска</div>
-
-<!-- Список людей -->
-<div th:if="${persons != null && !persons.isEmpty()}">
-    <div th:each="person : ${persons}" class="person">
-        <h3>
-            <a th:href="@{/person/{id}(id=${person.id})}" th:text="${person.lastName + ' ' + person.firstName + ' ' + person.surName}">Фамилия Имя Отчество</a>
-        </h3>
-        <p th:if="${person.dateOfBirth}">Родился(ась): <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span></p>
-        <p th:if="${person.getBirthAddress()}">
-            Место рождения: <span th:text="${person.getBirthAddress().getFormatAddress()}">губерния, уезд...</span>
-        </p>
+    <!-- Заголовок страницы -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="display-5 fw-bold text-dark">
+                <i class="bi bi-diagram-3"></i> Генеалогическое древо
+            </h1>
+        </div>
     </div>
+
+    <!-- Сообщение об ошибке -->
+    <div th:if="${errorMessage}" class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+        <div th:text="${errorMessage}">
+            Ошибка поиска
+        </div>
+    </div>
+
+    <!-- Список людей -->
+    <div th:if="${persons != null && !persons.isEmpty()}">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+
+                <!-- Цикл по людям -->
+                <div th:each="person : ${persons}" class="card shadow-sm mb-3 border-0">
+                    <div class="card-body">
+                        <!-- ФИО как ссылка -->
+                        <h4 class="card-title text-primary">
+                            <a th:href="@{/person/{id}(id=${person.id})}"
+                               class="text-decoration-none fw-bold stretched-link"
+                               th:text="${person.lastName + ' ' + person.firstName + ' ' + person.surName}">
+                                Фамилия Имя Отчество
+                            </a>
+                        </h4>
+
+                        <!-- Дата рождения -->
+                        <p class="card-text mb-1" th:if="${person.dateOfBirth}">
+                            <i class="bi bi-calendar-event text-secondary me-2"></i>
+                            <span class="text-muted">Родился(ась):</span>
+                            <span class="fw-medium" th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span>
+                        </p>
+
+                        <!-- Место рождения -->
+                        <p class="card-text" th:if="${person.getBirthAddress()}">
+                            <i class="bi bi-geo-alt text-danger me-2"></i>
+                            <span class="text-muted">Место рождения:</span>
+                            <span th:text="${person.getBirthAddress().getFormatAddress()}">губерния, уезд...</span>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок "Нет данных" -->
+    <div th:unless="${persons != null && !persons.isEmpty()}" class="alert alert-info text-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i> Нет данных для отображения.
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Кнопки навигации -->
+    <div class="d-flex justify-content-center gap-3">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-house"></i> На главную
+        </a>
+        <a href="/search-form" class="btn btn-primary">
+            <i class="bi bi-search"></i> Поиск
+        </a>
+    </div>
+
 </div>
-
-<div th:unless="${persons != null && !persons.isEmpty()}">
-    <p>Нет данных для отображения.</p>
-</div>
-
-<hr>
-<a href="/">На главную</a> |
-<a href="/search-form">Поиск</a> |
-
-
+<!-- Скрипты Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

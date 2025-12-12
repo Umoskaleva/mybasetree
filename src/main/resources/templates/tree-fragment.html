@@ -1,62 +1,268 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
+<!--<body>-->
+<!--<th:block th:fragment="tree-node(node)">-->
+<!--    <div class="family-level" th:if="${node != null}">-->
+
+<!--        &lt;!&ndash; Основной блок с человеком и его супругами &ndash;&gt;-->
+<!--        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 40px;">-->
+
+<!--            &lt;!&ndash; Основной человек &ndash;&gt;-->
+<!--            <div class="tree-node">-->
+<!--                <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}">Имя</a>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Если есть супруги &ndash;&gt;-->
+<!--            <div th:if="${node.partners != null and not #lists.isEmpty(node.partners)}"-->
+<!--                 style="display: flex; align-items: center;">-->
+
+<!--                &lt;!&ndash; Соединительная линия &ndash;&gt;-->
+<!--                <div style="width: 40px; height: 2px; background: #95a5a6; margin: 0 10px; position: relative;">-->
+<!--                    <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); color: #e74c3c; font-size: 12px;">♥</div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Супруги &ndash;&gt;-->
+<!--                <div style="display: flex; align-items: center;">-->
+<!--                    <div th:each="partner : ${node.partners}">-->
+<!--                        <div class="tree-node" style="border-color: #e74c3c; background: #fff5f5;">-->
+<!--                            <a th:href="@{/person/{id}(id=${partner.id})}" th:text="${partner.name}">Супруг</a>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Отступ между супругами, если их несколько &ndash;&gt;-->
+<!--                        <div th:if="${not partnerStat.last}"-->
+<!--                             style="width: 20px; height: 2px; background: #95a5a6; margin: 0 10px;"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Дети &ndash;&gt;-->
+<!--        <div th:if="${node.children != null and not #lists.isEmpty(node.children)}"-->
+<!--             style="display: flex; justify-content: center; position: relative; margin-top: 20px;">-->
+
+<!--            &lt;!&ndash; Вертикальная линия к детям &ndash;&gt;-->
+<!--            <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>-->
+
+<!--            &lt;!&ndash; Горизонтальная линия &ndash;&gt;-->
+<!--            <div style="position: absolute; top: -10px; left: 25%; right: 25%; height: 2px; background: #ccc;"></div>-->
+
+<!--            &lt;!&ndash; Узлы детей &ndash;&gt;-->
+<!--            <div th:each="child : ${node.children}" style="margin: 0 15px; position: relative;">-->
+<!--                &lt;!&ndash; Вертикальная линия к конкретному ребенку &ndash;&gt;-->
+<!--                <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>-->
+
+<!--                &lt;!&ndash; Рекурсивный вызов &ndash;&gt;-->
+<!--                <div th:replace="~{tree-fragment :: tree-node(${child})}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</th:block>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<body>
-<th:block th:fragment="tree-node(node)">
-    <div class="family-level" th:if="${node != null}">
+<head>
+    <meta charset="UTF-8">
+    <title>Family Tree</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-        <!-- Основной блок с человеком и его супругами -->
-        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 40px;">
+    <style>
+        /* --- Кастомные стили для дерева --- */
+
+        /* Карточка человека */
+        .node-card {
+            min-width: 120px;
+            max-width: 200px;
+            border-radius: 10px;
+            transition: transform 0.2s;
+            background: white;
+            z-index: 2; /* Поверх линий */
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        .node-card a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Линии соединения */
+        .line-vertical {
+            width: 2px;
+            background-color: #adb5bd; /* gray-500 */
+            height: 20px;
+            margin: 0 auto;
+        }
+
+        .line-horizontal-top {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background-color: #adb5bd;
+        }
+
+        /* Для супругов */
+        .spouse-connector {
+            width: 30px;
+            height: 2px;
+            background-color: #adb5bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .heart-icon {
+            color: #dc3545; /* Bootstrap danger */
+            background: #fff;
+            border-radius: 50%;
+            padding: 0 4px;
+            font-size: 12px;
+            z-index: 3;
+        }
+
+        /* Контейнер детей */
+        .children-wrapper {
+            position: relative;
+            padding-top: 20px; /* Место для верхней горизонтальной линии */
+        }
+
+        /* Логика горизонтальной линии над детьми */
+        /* Рисуем линию над каждым ребенком, соединяя их */
+        .child-container {
+            position: relative;
+            padding: 0 10px;
+        }
+        /* Линия вверх от ребенка */
+        .child-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid #adb5bd;
+            height: 20px; /* Соединяется с карточкой */
+            width: 0;
+        }
+        /* Горизонтальная линия (перекладина) */
+        .child-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 2px solid #adb5bd;
+            width: 50%;
+            height: 20px;
+        }
+        /* Правая часть перекладины */
+        .child-container.has-next::after {
+             width: 100%; /* Если это не последний, линия идет дальше */
+        }
+        /* Исправления для первого и последнего ребенка */
+        .child-container:first-child::after {
+            left: 50%;
+            right: auto;
+            width: 50%;
+        }
+        .child-container:last-child::after {
+            right: 50%;
+            left: auto;
+            width: 50%;
+            border-top: 2px solid #adb5bd; /* Возвращаем линию */
+        }
+        /* Если ребенок один - убираем горизонтальные линии, оставляем только вертикальную */
+        .child-container:only-child::after {
+            display: none;
+        }
+        .child-container:only-child {
+            padding-top: 0;
+        }
+        /* Вертикальная линия вниз от родителя к общему блоку детей */
+        .parent-vertical-line {
+            width: 2px;
+            height: 20px;
+            background: #adb5bd;
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body class="bg-light p-5">
+
+<!-- Начало фрагмента -->
+<th:block th:fragment="tree-node(node)">
+    <div class="d-flex flex-column align-items-center" th:if="${node != null}">
+
+        <!-- 1. Блок Родители (Человек + Супруги) -->
+        <div class="d-flex align-items-center mb-0">
 
             <!-- Основной человек -->
-            <div class="tree-node">
-                <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}">Имя</a>
+            <div class="card node-card shadow-sm border-primary">
+                <div class="card-body p-2 text-center">
+                    <i class="bi bi-person-circle fs-4 text-primary d-block mb-1"></i>
+                    <a th:href="@{/person/{id}(id=${node.id})}" th:text="${node.name}" class="stretched-link">Имя</a>
+                </div>
             </div>
 
-            <!-- Если есть супруги -->
-            <div th:if="${node.partners != null and not #lists.isEmpty(node.partners)}"
-                 style="display: flex; align-items: center;">
+            <!-- Супруги (цикл) -->
+            <div th:if="${node.partners != null and not #lists.isEmpty(node.partners)}" class="d-flex align-items-center">
+                <div th:each="partner : ${node.partners}" class="d-flex align-items-center">
 
-                <!-- Соединительная линия -->
-                <div style="width: 40px; height: 2px; background: #95a5a6; margin: 0 10px; position: relative;">
-                    <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); color: #e74c3c; font-size: 12px;">♥</div>
-                </div>
+                    <!-- Линия с сердечком -->
+                    <div class="spouse-connector">
+                        <i class="bi bi-heart-fill heart-icon shadow-sm"></i>
+                    </div>
 
-                <!-- Супруги -->
-                <div style="display: flex; align-items: center;">
-                    <div th:each="partner : ${node.partners}">
-                        <div class="tree-node" style="border-color: #e74c3c; background: #fff5f5;">
-                            <a th:href="@{/person/{id}(id=${partner.id})}" th:text="${partner.name}">Супруг</a>
+                    <!-- Карточка супруга -->
+                    <div class="card node-card shadow-sm border-danger bg-white">
+                        <div class="card-body p-2 text-center">
+                            <i class="bi bi-person-heart fs-4 text-danger d-block mb-1"></i>
+                            <a th:href="@{/person/{id}(id=${partner.id})}" th:text="${partner.name}" class="stretched-link">Супруг</a>
                         </div>
-
-                        <!-- Отступ между супругами, если их несколько -->
-                        <div th:if="${not partnerStat.last}"
-                             style="width: 20px; height: 2px; background: #95a5a6; margin: 0 10px;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Дети -->
-        <div th:if="${node.children != null and not #lists.isEmpty(node.children)}"
-             style="display: flex; justify-content: center; position: relative; margin-top: 20px;">
+        <!-- 2. Линии и Дети -->
+        <div th:if="${node.children != null and not #lists.isEmpty(node.children)}">
 
-            <!-- Вертикальная линия к детям -->
-            <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>
+            <!-- Вертикальная линия от родителей вниз -->
+            <div class="parent-vertical-line"></div>
 
-            <!-- Горизонтальная линия -->
-            <div style="position: absolute; top: -10px; left: 25%; right: 25%; height: 2px; background: #ccc;"></div>
+            <!-- Контейнер для детей (Flex row) -->
+            <div class="d-flex justify-content-center children-wrapper">
 
-            <!-- Узлы детей -->
-            <div th:each="child : ${node.children}" style="margin: 0 15px; position: relative;">
-                <!-- Вертикальная линия к конкретному ребенку -->
-                <div style="position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; transform: translateX(-50%);"></div>
+                <!-- Цикл по детям -->
+                <div th:each="child, stat : ${node.children}"
+                     class="child-container"
+                     th:classappend="${!stat.last} ? 'has-next' : ''"> <!-- Проверка: есть ли следующий, чтобы рисовать линию -->
 
-                <!-- Рекурсивный вызов -->
-                <div th:replace="~{tree-fragment :: tree-node(${child})}"></div>
+                    <!-- Важное замечание: Стили ::before и ::after в CSS рисуют линии над блоком -->
+
+                    <!-- Рекурсивный вызов (вставляем отступ сверху для самой карточки) -->
+                    <div style="margin-top: 20px;">
+                        <!-- Внимание: 'this :: tree-node' вызывает фрагмент из того же файла -->
+                        <!-- Если у вас разные файлы, используйте 'tree-fragment :: tree-node' -->
+                        <div th:replace="~{this :: tree-node(${child})}"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 </th:block>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

@@ -2,289 +2,185 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Редактирование профиля: ' + ${person.lastName} + ' ' + ${person.firstName}">Редактирование профиля</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование профиля</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css  " rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css  ">
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        .field { margin: 8px 0; }
-        .label { font-weight: bold; min-width: 200px; display: inline-block; }
-        a { color: #0066cc; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
-        /* Стили для поля факта */
-        .fact-container {
-            margin: 40px 0;
-            padding: 20px;
-            text-align: left;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            background-color: #fafafa;
-        }
-        .fact-label {
-            font-weight: bold;
-            font-size: 1.3em;
-            color: #333;
-            margin-bottom: 15px;
-            display: block;
-        }
-        .fact-display {
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 15px 0;
-            white-space: pre-wrap;
-            font-size: 1.1em;
-            line-height: 1.5;
-            min-height: 60px;
-        }
-
-        /* Стили для формы редактирования внизу */
-        .edit-fact-container {
-            margin-top: 50px;
-            padding: 25px;
-            border-top: 3px solid #ccc;
-            background-color: #f8f8f8;
-            text-align: left;
-        }
-        .edit-fact-form {
+        .person-photo-preview {
             width: 100%;
-        }
-        .fact-input {
-            width: 100%;
-            min-height: 120px;
-            resize: vertical;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
-        }
-        .fact-submit {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .fact-submit:hover {
-            background-color: #0055aa;
-        }
-
-        .fio-section { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        .fio-main { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
-        .fio-additional { color: #666; font-style: italic; }
-
-        /* Стили для расположения фото и информации */
-        .container { display: flex; gap: 20px; align-items: flex-start; }
-        .photo-section { flex-shrink: 0; }
-        .info-section { flex-grow: 1; text-align: left; }
-        .person-photo {
-            width: 350px;
-            height: 450px;
+            height: 300px;
             object-fit: cover;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 0.375rem; /* Bootstrap rounded */
         }
-        .no-photo {
-            width: 350px;
-            height: 450px;
-            border: 2px dashed #ccc;
-            border-radius: 5px;
+
+        .no-photo-preview {
+            width: 100%;
+            height: 300px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 0.375rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #666;
-            background-color: #f9f9f9;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        /* Стили для формы редактирования профиля */
-        .edit-profile-form {
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            text-align: left;
-        }
-        .edit-profile-form input,
-        .edit-profile-form select,
-        .edit-profile-form textarea {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 300px;
-        }
-        .edit-profile-form button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .edit-profile-form button:hover {
-            background-color: #218838;
-        }
-
-        /* Стили для заголовка страницы редактирования */
-        .page-title {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0066cc;
+            color: #adb5bd;
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<!-- Заголовок "Редактирование профиля" добавлен здесь -->
-<div class="page-title">Редактирование профиля</div>
+<div class="container py-5">
 
-<div class="container">
-    <!-- Левая колонка - фото -->
-    <div class="photo-section">
-        <div th:if="${person.mainPhotoUrl != null}">
-            <img th:src="${person.mainPhotoUrl}" alt="Фото" class="person-photo">
-        </div>
-        <div th:unless="${person.mainPhotoUrl != null}" class="no-photo">
-            Фото отсутствует
-        </div>
+    <!-- Ссылка "Назад к профилю" сверху -->
+    <div class="mb-3">
+        <a th:href="@{/person/{id}(id=${person.id})}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Назад к профилю
+        </a>
     </div>
 
-    <!-- Правая колонка - информация -->
-    <div class="info-section">
-        <!-- Основная секция ФИО -->
-        <div class="fio-section">
-            <div class="fio-main">
-                <!-- Основное ФИО: Фамилия Имя Отчество -->
-                <span th:text="${person.lastName}">Фамилия</span>
-                <span th:text="${person.firstName}">Имя</span>
-                <span th:if="${person.surName != null}" th:text="' ' + ${person.surName}">Отчество</span>
-            </div>
-
-            <!-- Дополнительные поля ФИО -->
-            <div class="field" th:if="${person.twoLastName != null}">
-                <span class="label">Вторая фамилия:</span>
-                <span th:text="${person.twoLastName}">Вторая фамилия</span>
-            </div>
-
-            <div class="field" th:if="${person.maidenName != null}">
-                <span class="label">Девичья фамилия:</span>
-                <span th:text="${person.maidenName}">Девичья фамилия</span>
-            </div>
-
-            <div class="field" th:if="${person.nickName != null}">
-                <span class="label">Прозвище:</span>
-                <span th:text="${person.nickName}">Прозвище</span>
-            </div>
-        </div>
-
-        <!-- Основная информация -->
-        <div class="field">
-            <span class="label">Пол:</span>
-            <span th:text="${person.gender == null ? 'Не указан' : person.gender}">Мужской</span>
-        </div>
-
-        <div th:if="${person.dateOfBirth}" class="field">
-            <span class="label">Дата рождения:</span>
-            <span th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}">01.01.1900</span>
-        </div>
-
-        <div th:if="${person.dateOfDeath}" class="field">
-            <span class="label">Дата смерти:</span>
-            <span th:text="${#temporals.format(person.dateOfDeath, 'dd.MM.yyyy')}">01.01.1980</span>
-        </div>
-
-        <!-- Адреса -->
-        <div th:if="${person.addresses != null && !person.addresses.isEmpty()}">
-            <h3>Адреса</h3>
-            <div th:each="addr : ${person.addresses}">
-                <div class="field" th:text="${addr.getFormatAddress()}">Губерния, уезд...</div>
-            </div>
-        </div>
+    <!-- Заголовок страницы -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="fw-bold text-dark m-0">Редактирование профиля</h2>
+        <a href="/family-tree" class="btn btn-outline-secondary btn-sm">Отмена</a>
     </div>
-</div>
 
-<!-- Секция для отображения интересного факта в середине страницы -->
-<div class="fact-container">
-    <span class="fact-label">Интересный факт</span>
-    <div class="fact-display" th:if="${person.interestingFact != null && #strings.length(person.interestingFact) > 0}" th:text="${person.interestingFact}">
-        Тут будет интересный факт...
-    </div>
-    <div class="fact-display" th:unless="${person.interestingFact != null && #strings.length(person.interestingFact) > 0}">
-        Интересный факт пока не добавлен.
-    </div>
-</div>
+    <!-- Форма редактирования -->
+    <!-- Важно: th:object="${person}" привязывает форму к объекту -->
+    <!-- enctype="multipart/form-data" нужен для загрузки фото -->
+    <form th:action="@{/person/save}" th:object="${person}" method="post" enctype="multipart/form-data">
 
-<!-- Форма для редактирования профиля (без поля интересного факта) -->
-<div class="edit-profile-form">
-    <h3>Редактировать профиль</h3>
-    <form th:action="@{/person/{id}/edit(id=${person.id})}" method="post">
-        <div class="field">
-            <label class="label">Имя:</label>
-            <input type="text" name="firstName" th:value="${person.firstName}" required>
-        </div>
-        <div class="field">
-            <label class="label">Фамилия:</label>
-            <input type="text" name="lastName" th:value="${person.lastName}" required>
-        </div>
-        <div class="field">
-            <label class="label">Отчество:</label>
-            <input type="text" name="surName" th:value="${person.surName}">
-        </div>
-        <div class="field">
-            <label class="label">Пол:</label>
-            <select name="gender">
-                <option value="">Не указан</option>
-                <option th:selected="${person.gender == 'MALE'}" value="MALE">Мужской</option>
-                <option th:selected="${person.gender == 'FEMALE'}" value="FEMALE">Женский</option>
-            </select>
-        </div>
-        <div class="field">
-            <label class="label">Дата рождения:</label>
-            <input type="date" name="dateOfBirth" th:value="${#temporals.format(person.dateOfBirth, 'yyyy-MM-dd')}">
-        </div>
-        <div class="field">
-            <label class="label">Дата смерти:</label>
-            <input type="date" name="dateOfDeath" th:value="${#temporals.format(person.dateOfDeath, 'yyyy-MM-dd')}">
-        </div>
+        <!-- Скрытое поле ID (обязательно для редактирования) -->
+        <input type="hidden" th:field="*{id}">
 
-        <!-- Кнопка отправки -->
-        <button type="submit">Сохранить изменения профиля</button>
+        <div class="row g-4">
+
+            <!-- ЛЕВАЯ КОЛОНКА: Фото -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-3">Фотография</h5>
+
+                        <!-- Предпросмотр текущего фото -->
+                        <div class="mb-3">
+                            <img th:if="${person.mainPhotoUrl != null}"
+                                 th:src="${person.mainPhotoUrl}"
+                                 class="person-photo-preview shadow-sm mb-2">
+
+                            <div th:unless="${person.mainPhotoUrl != null}" class="no-photo-preview mb-2">
+                                <div class="text-center">
+                                    <i class="bi bi-camera display-4"></i>
+                                    <div class="mt-2 small">Нет фото</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Поле загрузки файла -->
+                        <div class="mb-2">
+                            <label for="photoFile" class="form-label text-start w-100 small text-muted">Изменить фото:</label>
+                            <input class="form-control form-control-sm" type="file" id="photoFile" name="photoFile">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА: Данные -->
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-primary">Основная информация</h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <!-- Блок ФИО -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="lastName" class="form-label">Фамилия</label>
+                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="firstName" class="form-label">Имя</label>
+                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="surName" class="form-label">Отчество</label>
+                                <input type="text" class="form-control" id="surName" th:field="*{surName}">
+                            </div>
+                        </div>
+
+                        <!-- Дополнительные имена -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="maidenName" class="form-label">Девичья фамилия</label>
+                                <input type="text" class="form-control" id="maidenName" th:field="*{maidenName}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nickName" class="form-label">Прозвище</label>
+                                <input type="text" class="form-control" id="nickName" th:field="*{nickName}">
+                            </div>
+                        </div>
+
+                        <hr class="text-muted opacity-25">
+
+                        <!-- Пол и Даты -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="gender" class="form-label">Пол</label>
+                                <select class="form-select" id="gender" th:field="*{gender}">
+                                    <option value="" disabled selected>Выберите...</option>
+                                    <option value="MALE">Мужской</option>
+                                    <option value="FEMALE">Женский</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="dateOfBirth" class="form-label">Дата рождения</label>
+                                <!-- type="date" создает календарь -->
+                                <input type="date" class="form-control" id="birthDate" th:field="*{dateOfBirth}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="dateOfBirth" class="form-label">Дата смерти</label>
+                                <input type="date" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}">
+                            </div>
+                        </div>
+
+                        <!-- Факты / Биография -->
+                        <div class="mb-3">
+                            <label for="interestingFact" class="form-label">Интересные факты</label>
+                            <textarea class="form-control" id="interestingFact" rows="3" th:field="*{interestingFact}"></textarea>
+                        </div>
+
+                        <!-- Адреса (упрощенно) -->
+                        <div class="mb-3" th:if="${person.addresses != null}">
+                            <label class="form-label fw-bold">Сохраненные адреса:</label>
+                            <ul class="list-group">
+                                <li class="list-group-item" th:each="addr : ${person.addresses}" th:text="${addr.getFormatAddress()}">
+                                    Адрес...
+                                </li>
+                            </ul>
+                            <div class="form-text">Редактирование адресов доступно в отдельном меню.</div>
+                        </div>
+
+                        <!-- Кнопка Сохранить и ссылка "Вернуться к профилю" -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-between mt-4">
+                            <a th:href="@{/person/{id}(id=${person.id})}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Вернуться к профилю
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-save me-2"></i>Сохранить изменения
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
-<!-- Отдельная секция для редактирования интересного факта внизу страницы -->
-<div class="edit-fact-container">
-    <h3>Редактировать интересный факт</h3>
-    <form class="edit-fact-form" th:action="@{/person/{id}/update-fact(id=${person.id})}" method="post">
-        <label for="fact" class="fact-label">Введите интересный факт:</label><br>
-        <textarea id="fact" name="fact" class="fact-input" placeholder="Введите интересный факт о человеке..." th:text="${person.interestingFact}"></textarea><br>
-        <button type="submit" class="fact-submit">Сохранить интересный факт</button>
-    </form>
-</div>
-
-<hr>
-<a href="/family-tree">← К списку</a>
-
-<div style="margin-top: 20px;">
-    <a th:href="@{/tree/{id}(id=${person.id})}" class="nav-button">Показать генеалогическое дерево</a>
-</div>
-
-<hr>
-<div style="margin-top: 20px;">
-    <a th:href="@{/person/{id}(id=${person.id})}" style="font-size: 1.1em; color: #0066cc;">
-        ← Вернуться к просмотру профиля
-    </a>
-</div>
-
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js  "></script>
 </body>
 </html>

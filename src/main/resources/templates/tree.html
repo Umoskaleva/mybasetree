@@ -1,3 +1,257 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <th:block th:with="title=${'Генеалогическое дерево: ' + rootPerson.lastName + ' ' + rootPerson.firstName + ' ' + rootPerson.surName}">-->
+<!--        <title th:text="${title}">Генеалогическое дерево</title>-->
+<!--    </th:block>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 20px;-->
+<!--            background-color: #f5f5f5;-->
+<!--        }-->
+
+<!--        .tree-container {-->
+<!--            background: white;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .tree-header {-->
+<!--            text-align: center;-->
+<!--            margin-bottom: 30px;-->
+<!--            padding-bottom: 15px;-->
+<!--            border-bottom: 2px solid #e0e0e0;-->
+<!--        }-->
+
+<!--        .couple-wrapper {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            margin-bottom: 40px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .tree-node {-->
+<!--            padding: 15px;-->
+<!--            background: #fff;-->
+<!--            border: 2px solid #4CAF50;-->
+<!--            border-radius: 8px;-->
+<!--            text-align: center;-->
+<!--            min-width: 150px;-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .tree-node.partner {-->
+<!--            border-color: #e74c3c;-->
+<!--            background: #fff5f5;-->
+<!--        }-->
+
+<!--        .tree-node a {-->
+<!--            color: #2c3e50;-->
+<!--            text-decoration: none;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .tree-node a:hover {-->
+<!--            color: #e74c3c;-->
+<!--            text-decoration: underline;-->
+<!--        }-->
+
+<!--        /* Соединительная линия между супругами */-->
+<!--        .partners-connector-top {-->
+<!--            width: 40px;-->
+<!--            height: 2px;-->
+<!--            background: #95a5a6;-->
+<!--            margin: 0 10px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .partners-connector-top::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: -8px;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--            color: #e74c3c;-->
+<!--            font-size: 12px;-->
+<!--        }-->
+
+<!--        /* Контейнер для партнеров */-->
+<!--        .partners-container {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        /* Дети */-->
+<!--        .children-container {-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            margin-top: 20px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .children-container::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: -20px;-->
+<!--            left: 50%;-->
+<!--            width: 2px;-->
+<!--            height: 20px;-->
+<!--            background: #ccc;-->
+<!--            transform: translateX(-50%);-->
+<!--        }-->
+
+<!--        .child-node {-->
+<!--            margin: 0 15px;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .child-node::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: -20px;-->
+<!--            left: 50%;-->
+<!--            width: 2px;-->
+<!--            height: 20px;-->
+<!--            background: #ccc;-->
+<!--            transform: translateX(-50%);-->
+<!--        }-->
+
+<!--        .child-node::after {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: -20px;-->
+<!--            width: calc(100% + 30px);-->
+<!--            height: 2px;-->
+<!--            background: #ccc;-->
+<!--            left: -15px;-->
+<!--        }-->
+
+<!--        /* Навигация */-->
+<!--        .navigation {-->
+<!--            margin-bottom: 20px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .nav-button {-->
+<!--            display: inline-block;-->
+<!--            padding: 10px 20px;-->
+<!--            margin: 0 10px;-->
+<!--            background: #3498db;-->
+<!--            color: white;-->
+<!--            text-decoration: none;-->
+<!--            border-radius: 5px;-->
+<!--            transition: background 0.3s;-->
+<!--        }-->
+
+<!--        .nav-button:hover {-->
+<!--            background: #2980b9;-->
+<!--        }-->
+
+<!--        .empty-tree {-->
+<!--            text-align: center;-->
+<!--            color: #7f8c8d;-->
+<!--            font-style: italic;-->
+<!--            padding: 40px;-->
+<!--        }-->
+
+<!--        /* Отступы между партнерами */-->
+<!--        .partner-spacing {-->
+<!--            width: 20px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="navigation">-->
+<!--    <a href="/family-tree" class="nav-button">← К списку людей</a>-->
+<!--    <a href="/tree" class="nav-button">Выбрать другое дерево</a>-->
+<!--    <a th:href="@{/person/{id}(id=${rootId})}" class="nav-button">Профиль человека</a>-->
+<!--</div>-->
+
+<!--<div class="tree-container">-->
+<!--    <div class="tree-header">-->
+<!--        <h1 th:text="'Генеалогическое дерево: ' + ${rootPerson.lastName} + ' ' + ${rootPerson.firstName} + ' ' + ${rootPerson.surName}">Генеалогическое дерево</h1>-->
+<!--        <p>Нажмите на имя человека для просмотра его профиля</p>-->
+<!--    </div>-->
+
+<!--    <div th:if="${treeNode == null}" class="empty-tree">-->
+<!--        <h3>Дерево пусто</h3>-->
+<!--        <p>Данные дерева не найдены.</p>-->
+<!--    </div>-->
+
+<!--    <div th:if="${treeNode != null}">-->
+<!--        &lt;!&ndash; Рекурсивное отображение дерева &ndash;&gt;-->
+<!--        <div th:replace="~{tree-fragment :: tree-node(${treeNode})}"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <th:block th:with="title=${'Генеалогическое дерево: ' + rootPerson.lastName + ' ' + rootPerson.firstName + ' ' + rootPerson.surName}">-->
+<!--        <title th:text="${title}">Генеалогическое дерево</title>-->
+<!--    </th:block>-->
+
+<!--    &lt;!&ndash; Bootstrap 5 CSS &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Bootstrap Icons &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">-->
+<!--</head>-->
+<!--<body class="bg-light">-->
+
+<!--<div class="container py-4">-->
+
+<!--    &lt;!&ndash; Навигационные кнопки &ndash;&gt;-->
+<!--    <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">-->
+<!--        <a href="/family-tree" class="btn btn-outline-primary">-->
+<!--            <i class="bi bi-arrow-left me-1"></i> К списку людей-->
+<!--        </a>-->
+<!--        <a href="/tree" class="btn btn-outline-secondary">-->
+<!--            Выбрать другое дерево-->
+<!--        </a>-->
+<!--        <a th:href="@{/person/{id}(id=${rootId})}" class="btn btn-outline-info">-->
+<!--            Профиль человека-->
+<!--        </a>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Основной контейнер дерева &ndash;&gt;-->
+<!--    <div class="card shadow-sm border-0">-->
+<!--        <div class="card-header text-center bg-primary text-white py-4">-->
+<!--            <h1 class="display-6 mb-0" th:text="'Генеалогическое дерево: ' + ${rootPerson.lastName} + ' ' + ${rootPerson.firstName} + ' ' + ${rootPerson.surName}">Генеалогическое дерево</h1>-->
+<!--            <p class="mb-0 text-light-emphasis">Нажмите на имя человека для просмотра его профиля</p>-->
+<!--        </div>-->
+
+<!--        <div class="card-body p-4">-->
+<!--            <div th:if="${treeNode == null}" class="alert alert-info text-center">-->
+<!--                <h3>Дерево пусто</h3>-->
+<!--                <p class="mb-0">Данные дерева не найдены.</p>-->
+<!--            </div>-->
+
+<!--            <div th:if="${treeNode != null}">-->
+<!--                &lt;!&ndash; Рекурсивное отображение дерева &ndash;&gt;-->
+<!--                <div th:replace="~{tree-fragment :: tree-node(${treeNode})}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--</div>-->
+
+<!--&lt;!&ndash; Bootstrap JS Bundle &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -5,189 +259,76 @@
     <th:block th:with="title=${'Генеалогическое дерево: ' + rootPerson.lastName + ' ' + rootPerson.firstName + ' ' + rootPerson.surName}">
         <title th:text="${title}">Генеалогическое дерево</title>
     </th:block>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- Добавляем стиль для контейнера -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .tree-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .tree-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .couple-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .tree-node {
-            padding: 15px;
-            background: #fff;
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
-            text-align: center;
-            min-width: 150px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .tree-node.partner {
-            border-color: #e74c3c;
-            background: #fff5f5;
-        }
-
-        .tree-node a {
-            color: #2c3e50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .tree-node a:hover {
-            color: #e74c3c;
-            text-decoration: underline;
-        }
-
-        /* Соединительная линия между супругами */
-        .partners-connector-top {
-            width: 40px;
-            height: 2px;
-            background: #95a5a6;
-            margin: 0 10px;
-            position: relative;
-        }
-
-        .partners-connector-top::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #e74c3c;
-            font-size: 12px;
-        }
-
-        /* Контейнер для партнеров */
-        .partners-container {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Дети */
-        .children-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            position: relative;
-        }
-
-        .children-container::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            width: 2px;
-            height: 20px;
-            background: #ccc;
-            transform: translateX(-50%);
-        }
-
-        .child-node {
-            margin: 0 15px;
-            position: relative;
-        }
-
-        .child-node::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            width: 2px;
-            height: 20px;
-            background: #ccc;
-            transform: translateX(-50%);
-        }
-
-        .child-node::after {
-            content: '';
-            position: absolute;
-            top: -20px;
-            width: calc(100% + 30px);
-            height: 2px;
-            background: #ccc;
-            left: -15px;
-        }
-
-        /* Навигация */
-        .navigation {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .nav-button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 0 10px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        .nav-button:hover {
-            background: #2980b9;
-        }
-
-        .empty-tree {
-            text-align: center;
-            color: #7f8c8d;
-            font-style: italic;
-            padding: 40px;
-        }
-
-        /* Отступы между партнерами */
-        .partner-spacing {
-            width: 20px;
+        .container-with-border {
+            border: 2px solid #dee2e6; /* Цвет границы */
+            border-radius: 8px; /* Закругленные углы */
+            padding: 20px; /* Внутренние отступы */
+            margin-top: 20px; /* Внешний отступ сверху */
+            background-color: #fff; /* Фон контейнера */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для глубины */
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="navigation">
-    <a href="/family-tree" class="nav-button">← К списку людей</a>
-    <a href="/tree" class="nav-button">Выбрать другое дерево</a>
-    <a th:href="@{/person/{id}(id=${rootId})}" class="nav-button">Профиль человека</a>
+<!-- Обертываем весь контент в div с классом container-with-border -->
+<div class="container py-4 container-with-border">
+
+    <!-- Навигационные кнопки -->
+    <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+        <a href="/family-tree" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i> К списку людей
+        </a>
+        <a href="/tree" class="btn btn-outline-secondary">
+            Выбрать другое дерево
+        </a>
+        <a th:href="@{/person/{id}(id=${rootId})}" class="btn btn-outline-info">
+            Профиль человека
+        </a>
+    </div>
+
+    <!-- Основной контейнер дерева -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header text-center bg-primary text-white py-4">
+            <h1 class="display-6 mb-0" th:text="'Генеалогическое дерево: ' + ${rootPerson.lastName} + ' ' + ${rootPerson.firstName} + ' ' + ${rootPerson.surName}">Генеалогическое дерево</h1>
+            <p class="mb-0 text-light-emphasis">Нажмите на имя человека для просмотра его профиля</p>
+        </div>
+
+        <div class="card-body p-4">
+            <div th:if="${treeNode == null}" class="alert alert-info text-center">
+                <h3>Дерево пусто</h3>
+                <p class="mb-0">Данные дерева не найдены.</p>
+            </div>
+
+            <div th:if="${treeNode != null}">
+                <!-- Рекурсивное отображение дерева -->
+                <div th:replace="~{tree-fragment :: tree-node(${treeNode})}"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<div class="tree-container">
-    <div class="tree-header">
-        <h1 th:text="'Генеалогическое дерево: ' + ${rootPerson.lastName} + ' ' + ${rootPerson.firstName} + ' ' + ${rootPerson.surName}">Генеалогическое дерево</h1>
-        <p>Нажмите на имя человека для просмотра его профиля</p>
-    </div>
-
-    <div th:if="${treeNode == null}" class="empty-tree">
-        <h3>Дерево пусто</h3>
-        <p>Данные дерева не найдены.</p>
-    </div>
-
-    <div th:if="${treeNode != null}">
-        <!-- Рекурсивное отображение дерева -->
-        <div th:replace="~{tree-fragment :: tree-node(${treeNode})}"></div>
-    </div>
-</div>
-
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
