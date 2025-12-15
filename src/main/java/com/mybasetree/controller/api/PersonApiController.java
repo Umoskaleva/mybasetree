@@ -50,4 +50,6 @@ public class PersonApiController {
 
         return ResponseEntity.ok("Связь создана:" + from.getFirstName() + " -> " + to.getFirstName() + "как" + role);
     }
+
+
 }

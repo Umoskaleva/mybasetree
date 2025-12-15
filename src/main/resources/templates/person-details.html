@@ -11,12 +11,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css  ">
 
     <style>
-        /* Небольшие кастомные стили там, где Bootstrap недостаточно */
         .person-photo-container {
             width: 100%;
-            max-width: 350px; /* Ограничиваем ширину как в оригинале */
+            max-width: 350px;
             height: 450px;
-            margin: 0 auto; /* Центрируем фото внутри колонки на мобильных */
+            margin: 0 auto;
         }
 
         .person-photo {
@@ -31,7 +30,6 @@
             color: #6c757d;
         }
 
-        /* Стиль для меток полей (слева) */
         .field-label {
             font-weight: 600;
             color: #495057;
@@ -42,7 +40,7 @@
 
 <div class="container py-5">
 
-    <!-- Кнопка "Назад" (опционально, для удобства) -->
+    <!-- Кнопка "Назад" -->
     <div class="mb-4">
         <a href="/family-tree" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-arrow-left"></i> Назад к списку
@@ -54,14 +52,10 @@
         <!-- Левая колонка - Фото -->
         <div class="col-lg-4 col-md-5 text-center text-md-start">
             <div class="person-photo-container shadow-sm rounded overflow-hidden mb-3">
-
-                <!-- Если есть фото -->
                 <img th:if="${person.mainPhotoUrl != null}"
                      th:src="${person.mainPhotoUrl}"
                      alt="Фото"
                      class="person-photo">
-
-                <!-- Если нет фото -->
                 <div th:unless="${person.mainPhotoUrl != null}"
                      class="person-photo no-photo d-flex align-items-center justify-content-center">
                     <div class="text-center">
@@ -84,10 +78,16 @@
                         <span th:if="${person.surName != null}" th:text="${person.surName}" class="text-secondary">Отчество</span>
                     </h1>
 
-                    <!-- Кнопка редактирования -->
-                    <a th:href="@{/person/{id}/redaction(id=${person.id})}" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-pencil me-1"></i> Редактировать профиль
-                    </a>
+                    <div class="d-flex gap-2">
+                        <!-- Кнопка редактирования профиля -->
+                        <a th:href="@{/person/{id}/redaction(id=${person.id})}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil me-1"></i> Редактировать профиль
+                        </a>
+                        <!-- Кнопка просмотра дерева -->
+                        <a th:href="@{/tree/{rootId}(rootId=${person.id})}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-diagram-3 me-1"></i> Просмотр дерева
+                        </a>
+                    </div>
                 </div>
 
                 <div class="card-body px-4 pb-4">
@@ -95,35 +95,28 @@
 
                     <!-- Список полей -->
                     <dl class="row mb-0">
-
-                        <!-- Вторая фамилия -->
                         <th:block th:if="${person.twoLastName != null}">
                             <dt class="col-sm-4 field-label">Вторая фамилия:</dt>
                             <dd class="col-sm-8" th:text="${person.twoLastName}"></dd>
                         </th:block>
 
-                        <!-- Девичья фамилия -->
                         <th:block th:if="${person.maidenName != null}">
                             <dt class="col-sm-4 field-label">Девичья фамилия:</dt>
                             <dd class="col-sm-8" th:text="${person.maidenName}"></dd>
                         </th:block>
 
-                        <!-- Прозвище -->
                         <th:block th:if="${person.nickName != null}">
                             <dt class="col-sm-4 field-label">Прозвище:</dt>
                             <dd class="col-sm-8 fst-italic text-muted" th:text="${person.nickName}"></dd>
                         </th:block>
 
-                        <!-- Пример добавления даты рождения (если есть в модели) -->
                         <dt class="col-sm-4 field-label">Дата рождения:</dt>
                         <dd class="col-sm-8" th:text="${#temporals.format(person.dateOfBirth, 'dd.MM.yyyy')}"></dd>
-
                     </dl>
                 </div>
             </div>
 
-            <!-- Блок с фактами (из вашего CSS) -->
-            <!-- Предполагаю, что поле называется person.interestingFact или похожее, добавил для примера -->
+            <!-- Блок с фактами -->
             <div class="card shadow-sm border-0" th:if="${person.interestingFact != null and !person.interestingFact.isEmpty()}">
                 <div class="card-body p-4 bg-light bg-opacity-50 rounded">
                     <h5 class="card-title fw-bold text-dark mb-3">
@@ -134,7 +127,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -143,4 +135,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js  "></script>
 </body>
 </html>
-

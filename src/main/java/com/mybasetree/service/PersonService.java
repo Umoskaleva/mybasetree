@@ -82,7 +82,7 @@ public class PersonService {
         existingPerson.setDateOfDivorce(updatePerson.getDateOfDivorce());
         existingPerson.setDateOfDeath(updatePerson.getDateOfDeath());
         existingPerson.setAddresses(updatePerson.getAddresses());
-        existingPerson.setPhotos(updatePerson.getPhotos());
+//        existingPerson.setPhotos(updatePerson.getPhotos());
         existingPerson.setMainPhotoUrl(updatePerson.getMainPhotoUrl());
         existingPerson.setInterestingFact(updatePerson.getInterestingFact());
 

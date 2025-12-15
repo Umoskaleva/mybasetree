@@ -62,7 +62,9 @@ public class Person {
     // все варианты каскадных операций,в т.ч. удаление связей при удалении человека
     private List<Relationship> relationships = new ArrayList<>();
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "person",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
     @Column(name = "main_photo_url", length = 500)

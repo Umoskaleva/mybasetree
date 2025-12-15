@@ -51,7 +51,7 @@
     <!-- Форма редактирования -->
     <!-- Важно: th:object="${person}" привязывает форму к объекту -->
     <!-- enctype="multipart/form-data" нужен для загрузки фото -->
-    <form th:action="@{/person/save}" th:object="${person}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/person-details-redaction-good}" th:object="${person}" method="post" enctype="multipart/form-data">
 
         <!-- Скрытое поле ID (обязательно для редактирования) -->
         <input type="hidden" th:field="*{id}">
@@ -135,14 +135,26 @@
                                     <option value="FEMALE">Женский</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="dateOfBirth" class="form-label">Дата рождения</label>
-                                <!-- type="date" создает календарь -->
-                                <input type="date" class="form-control" id="birthDate" th:field="*{dateOfBirth}">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="dateOfBirth" class="form-label">Дата рождения *</label>
+                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" required>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="dateOfBirth" class="form-label">Дата смерти</label>
-                                <input type="date" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}">
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="dateOfMarriage" class="form-label">Дата брака</label>
+                                    <input type="date" class="form-control" id="dateOfMarriage" th:field="*{dateOfMarriage}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="dateOfDivorce" class="form-label">Дата развода</label>
+                                    <input type="date" class="form-control" id="dateOfDivorce" th:field="*{dateOfDivorce}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="dateOfDeath" class="form-label">Дата смерти</label>
+                                    <input type="date" class="form-control" id="dateOfDeath" th:field="*{dateOfDeath}">
+                                </div>
                             </div>
                         </div>
 
